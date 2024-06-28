@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { UserModule } from './user/user.module';
 
 const configService = new ConfigService();
 
@@ -35,8 +36,9 @@ const configService = new ConfigService();
     ]),
     AuthModule,
     CommonModule,
+    UserModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     AppService,
     {

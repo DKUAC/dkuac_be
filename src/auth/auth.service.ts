@@ -5,6 +5,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
     @InjectRepository(UserModel)
     private readonly userRepository: Repository<UserModel>,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**
@@ -31,6 +33,9 @@ export class AuthService {
     if (await this.findByStudentNumber(student_number)) {
       throw new UnauthorizedException('이미 가입된 회원입니다.');
     }
+
+    this.emailService.sendEmail(student_number);
+
     const saltRounds = Number(
       this.configService.get<number>('BCRYPT_SALT_ROUNDS'),
     );

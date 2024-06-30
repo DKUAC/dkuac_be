@@ -4,9 +4,14 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModel } from 'src/user/entities/user.entity';
 import { EmailModule } from 'src/email/email.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserModel]), EmailModule],
+  imports: [
+    CacheModule.register(),
+    TypeOrmModule.forFeature([UserModel]),
+    EmailModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })

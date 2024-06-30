@@ -10,6 +10,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 const configService = new ConfigService();
 
@@ -19,7 +20,6 @@ const configService = new ConfigService();
       isGlobal: true,
       envFilePath: '.env',
     }),
-
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: configService.get('DOCKER_MYSQL_HOST'),

@@ -9,3 +9,8 @@ export class SignUpDto extends PickType(UserModel, [
   'birth',
   'phone',
 ]) {}
+
+export class LogInDto extends PickType(UserModel, [
+  'student_number',
+  'password',
+]) {}

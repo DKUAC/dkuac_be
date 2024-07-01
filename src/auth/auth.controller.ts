@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignUpDto } from './dto/sign-up.dto';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { LogInDto, SignUpDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +10,11 @@ export class AuthController {
   async signUp(@Body() dto: SignUpDto) {
     const reuslt = await this.authService.signUp(dto);
     return reuslt;
+  }
+
+  @Post('login')
+  async login(@Body() dto: LogInDto) {
+    const result = await this.authService.logIn(dto);
   }
 
   @Post('create-verification-code')
@@ -25,4 +29,6 @@ export class AuthController {
   ) {
     return await this.authService.isVerified(studentNumber, codeFromUser);
   }
+  @Post('password-change')
+  async passwordChange() {}
 }

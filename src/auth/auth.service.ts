@@ -1,7 +1,12 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserModel } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { SignUpDto } from './dto/sign-up.dto';
+import { LogInDto, SignUpDto } from './dto/auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
@@ -46,16 +51,6 @@ export class AuthService {
     return user;
   }
 
-  private async findByStudentNumber(student_number: number) {
-    return await this.userRepository.existsBy({
-      student_number,
-    });
-  }
-
-  private generateVerifcationCode() {
-    return String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
-  }
-
   async createVerificationCodeAndSend(studentNumber: number) {
     const verifcationCode: string = this.generateVerifcationCode();
     await this.cacheManager.set(`${studentNumber}`, verifcationCode, 3000000);
@@ -67,5 +62,29 @@ export class AuthService {
       `${studentNumber}`,
     );
     return verificationCode === codeFromUser;
+  }
+
+  async logIn(dto: LogInDto) {
+    const user = await this.userRepository.findOne({
+      where: {
+        student_number: dto.student_number,
+      },
+      select: ['id', 'student_number', 'password'],
+    });
+
+    const ok = bcrypt.compareSync(dto.password, user?.password);
+    if (!user || !ok) {
+      throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
+    }
+  }
+
+  private async findByStudentNumber(student_number: number) {
+    return await this.userRepository.existsBy({
+      student_number,
+    });
+  }
+
+  private generateVerifcationCode() {
+    return String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
   }
 }

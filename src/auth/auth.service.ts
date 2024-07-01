@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     private readonly emailService: EmailService,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    private readonly jwtService: JwtService,
   ) {}
 
   /**
@@ -71,11 +73,77 @@ export class AuthService {
       },
       select: ['id', 'student_number', 'password'],
     });
-
-    const ok = bcrypt.compareSync(dto.password, user?.password);
-    if (!user || !ok) {
+    if (!user) {
       throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
     }
+    const ok = bcrypt.compareSync(dto.password, user?.password);
+    if (!ok) {
+      throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
+    }
+
+    const tokens = await this.genUserToken(user);
+    return {
+      user: {
+        id: user.id,
+      },
+      ...tokens,
+    };
+  }
+
+  async validateUser(studentNumber: number, pass: string): Promise<any> {
+    const user = await this.userRepository.findOne({
+      where: {
+        student_number: studentNumber,
+      },
+    });
+    const ok = bcrypt.compareSync(pass, user?.password);
+
+    if (user && ok) {
+      return user;
+    }
+
+    return null;
+  }
+
+  async genUserToken(user: Pick<UserModel, 'student_number' | 'id'>) {
+    return {
+      acessToken: await this.genAccessToken(user),
+      refreshToken: await this.genRefreshToken(user),
+    };
+  }
+
+  private async genAccessToken(user: Pick<UserModel, 'student_number' | 'id'>) {
+    const payload = { studentNumber: user.student_number, sub: user.id };
+    const acessToken = await this.jwtService.signAsync(
+      {
+        ...payload,
+        type: 'access',
+      },
+      {
+        expiresIn: this.configService.get<string>(
+          'JWT_ACCESS_TOKEN_EXPIRATION',
+        ),
+      },
+    );
+    return acessToken;
+  }
+
+  private async genRefreshToken(
+    user: Pick<UserModel, 'student_number' | 'id'>,
+  ) {
+    const payload = { studentNumber: user.student_number, sub: user.id };
+    const refreshToken = await this.jwtService.signAsync(
+      {
+        ...payload,
+        type: 'refresh',
+      },
+      {
+        expiresIn: this.configService.get<string>(
+          'JWT_REFRESH_TOKEN_EXPIRATION',
+        ),
+      },
+    );
+    return refreshToken;
   }
 
   private async findByStudentNumber(student_number: number) {

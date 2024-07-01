@@ -1,5 +1,6 @@
 import { UserModel } from 'src/user/entities/user.entity';
 import { PickType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class SignUpDto extends PickType(UserModel, [
   'name',

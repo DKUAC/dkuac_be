@@ -7,6 +7,9 @@ import { EmailModule } from 'src/email/email.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 const configService = new ConfigService();
 @Module({
@@ -23,10 +26,10 @@ const configService = new ConfigService();
         },
       }),
     }),
-
+    PassportModule,
     EmailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {}

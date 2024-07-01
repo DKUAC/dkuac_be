@@ -73,9 +73,11 @@ export class AuthService {
       },
       select: ['id', 'student_number', 'password'],
     });
-
+    if (!user) {
+      throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
+    }
     const ok = bcrypt.compareSync(dto.password, user?.password);
-    if (!user || !ok) {
+    if (!ok) {
       throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
     }
 
@@ -86,6 +88,21 @@ export class AuthService {
       },
       ...tokens,
     };
+  }
+
+  async validateUser(studentNumber: number, pass: string): Promise<any> {
+    const user = await this.userRepository.findOne({
+      where: {
+        student_number: studentNumber,
+      },
+    });
+    const ok = bcrypt.compareSync(pass, user?.password);
+
+    if (user && ok) {
+      return user;
+    }
+
+    return null;
   }
 
   async genUserToken(user: Pick<UserModel, 'student_number' | 'id'>) {

@@ -15,6 +15,7 @@ export class AuthController {
   @Post('login')
   async login(@Body() dto: LogInDto) {
     const result = await this.authService.logIn(dto);
+    return result;
   }
 
   @Post('create-verification-code')

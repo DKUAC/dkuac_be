@@ -10,7 +10,13 @@ import { AuthService } from './auth.service';
 import { LogInDto, SignUpDto } from './dto/auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -29,7 +35,7 @@ export class AuthController {
   @ApiOperation({
     summary: '로그인',
   })
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
     return req.user;
@@ -55,9 +61,38 @@ export class AuthController {
     return await this.authService.isVerified(studentNumber, codeFromUser);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({
     summary: '비밀번호 변경',
   })
+  @UseGuards(AuthGuard('jwt'))
+  @Post('password-check')
+  async passwordCheck(@Request() req, @Body('password') password: string) {
+    const { userId } = req.user;
+    const result = await this.authService.passwordCheck(userId, password);
+    if (result === false) {
+      return '비밀번호가 일치하지 않습니다.';
+    }
+    return {
+      statusCode: 200,
+    };
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '비밀번호 변경',
+  })
+  @UseGuards(AuthGuard('jwt'))
   @Post('password-change')
-  async passwordChange() {}
+  async passwordChange(
+    @Request() req,
+    @Body('newPassword') newPassword: string,
+  ) {
+    const { userId } = req.user;
+    await this.authService.passwordChange(userId, newPassword);
+    return {
+      statusCode: 200,
+      message: '비밀번호가 변경되었습니다.',
+    };
+  }
 }

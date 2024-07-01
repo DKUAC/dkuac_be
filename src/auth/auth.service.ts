@@ -90,6 +90,39 @@ export class AuthService {
     };
   }
 
+  async passwordCheck(id: number, password: string) {
+    const reuslt = await this.isSamePassword(id, password);
+
+    return reuslt;
+  }
+
+  async passwordChange(id: number, newPassword: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+    const isSamePassword = await this.isSamePassword(id, newPassword);
+    if (isSamePassword) {
+      throw new BadRequestException(
+        '이전과 동일한 비밀번호는 사용할 수 없습니다.',
+      );
+    }
+
+    const saltRounds = Number(
+      this.configService.get<number>('BCRYPT_SALT_ROUNDS'),
+    );
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    const userObj = { ...user, password: hashedPassword };
+    await this.userRepository.save(userObj);
+
+    return '비밀번호 변경 성공';
+  }
+
   async validateUser(studentNumber: number, pass: string): Promise<any> {
     const user = await this.userRepository.findOne({
       where: {
@@ -110,6 +143,21 @@ export class AuthService {
       acessToken: await this.genAccessToken(user),
       refreshToken: await this.genRefreshToken(user),
     };
+  }
+
+  private async isSamePassword(id: number, password: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+    const result = bcrypt.compareSync(password, user?.password);
+
+    return result;
   }
 
   private async genAccessToken(user: Pick<UserModel, 'student_number' | 'id'>) {

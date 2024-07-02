@@ -1,21 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LogInDto, SignUpDto } from './dto/auth.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiProperty,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')
@@ -26,6 +13,9 @@ export class AuthController {
   @ApiOperation({
     summary: '회원가입',
   })
+  @ApiBody({
+    type: SignUpDto,
+  })
   @Post('signup')
   async signUp(@Body() dto: SignUpDto) {
     const reuslt = await this.authService.signUp(dto);
@@ -34,6 +24,9 @@ export class AuthController {
 
   @ApiOperation({
     summary: '로그인',
+  })
+  @ApiBody({
+    type: LogInDto,
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')

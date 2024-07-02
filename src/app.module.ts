@@ -11,6 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { RentModule } from './rent/rent.module';
 
 const configService = new ConfigService();
 
@@ -40,6 +41,7 @@ const configService = new ConfigService();
     CommonModule,
     UserModule,
     EmailModule,
+    RentModule,
   ],
   controllers: [AppController],
   providers: [

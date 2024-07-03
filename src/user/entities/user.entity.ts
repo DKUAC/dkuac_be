@@ -1,12 +1,5 @@
 import { BaseModel } from 'src/common/entities/base.entity';
-import {
-  IsBoolean,
-  IsDate,
-  IsIn,
-  IsNumber,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsDate, IsIn, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Column, Entity } from 'typeorm';
 

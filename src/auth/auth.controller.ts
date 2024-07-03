@@ -1,9 +1,18 @@
-import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LogInDto, SignUpDto } from './dto/auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -87,5 +96,12 @@ export class AuthController {
       statusCode: 200,
       message: '비밀번호가 변경되었습니다.',
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('test')
+  async test(@Req() req) {
+    console.log(req.user);
+    return 'test';
   }
 }

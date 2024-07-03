@@ -10,9 +10,6 @@ import {
 } from '@nestjs/common';
 import { RentService } from './rent.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { TransactionInterceptor } from 'src/common/interceptor/transactioin.interceptor';
-import { QueryRunner } from 'src/common/decorator/query-runner.decorator';
-import { QueryRunner as QR } from 'typeorm';
 
 @Controller('rent')
 export class RentController {
@@ -25,13 +22,14 @@ export class RentController {
   }
 
   @UseGuards(JwtAuthGuard)
-  // @UseInterceptors(TransactionInterceptor)
+  @Get('check-rent')
+  async checkRent() {
+    return await this.rentService.checkRent();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async rentShoe(
-    @Req() req,
-    // @QueryRunner() qr: QR,
-    @Body('size') size: number,
-  ) {
+  async rentShoe(@Req() req, @Body('size') size: number) {
     const { sub } = req.user;
     if (!size) {
       throw new BadRequestException('사이즈를 입력해주세요.');

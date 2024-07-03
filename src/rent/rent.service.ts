@@ -22,7 +22,16 @@ export class RentService {
     });
   }
 
-  // 트랜잭션 적용해야함
+  async checkRent() {
+    const rents = await this.rentRepository.find({});
+
+    return rents.map((rent) => ({
+      size: rent.size,
+      rent_date: rent.rent_date,
+      name: rent.User.name.split('|')[0],
+    }));
+  }
+
   async rentShoe(userId: number, size: number) {
     const QueryRunner = this.dataSources.createQueryRunner();
 
@@ -36,7 +45,6 @@ export class RentService {
 
       if (
         // user.is_paid === false ||
-
         user.current_semester_member === false
       ) {
         throw new BadRequestException(
@@ -95,16 +103,6 @@ export class RentService {
         throw new BadRequestException('회원 정보를 찾을 수 없습니다.');
       }
 
-      const shoe = await this.shoeRepository.findOne({
-        where: {
-          size,
-        },
-      });
-
-      if (!shoe) {
-        throw new BadRequestException('해당 사이즈의 신발이 없습니다.');
-      }
-
       const rent = await this.rentRepository.findOne({
         where: {
           size,
@@ -116,6 +114,16 @@ export class RentService {
 
       if (!rent) {
         throw new BadRequestException('해당 신발을 대여한 기록이 없습니다.');
+      }
+
+      const shoe = await this.shoeRepository.findOne({
+        where: {
+          size,
+        },
+      });
+
+      if (!shoe) {
+        throw new BadRequestException('해당 사이즈의 신발이 없습니다.');
       }
 
       shoe.count += 1;

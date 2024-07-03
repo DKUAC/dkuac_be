@@ -15,7 +15,9 @@ export class RentModel extends BaseModel {
   @Column()
   rent_date: Date;
 
-  @OneToOne(() => UserModel)
+  @OneToOne(() => UserModel, {
+    eager: true,
+  })
   @JoinColumn()
   User: UserModel;
 }

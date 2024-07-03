@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RentModule } from './rent/rent.module';
+import { ActivityModule } from './activity/activity.module';
 
 const configService = new ConfigService();
 
@@ -42,6 +43,7 @@ const configService = new ConfigService();
     UserModule,
     EmailModule,
     RentModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [

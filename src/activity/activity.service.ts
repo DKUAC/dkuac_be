@@ -47,9 +47,9 @@ export class ActivityService {
         throw new BadRequestException('존재하지 않는 사용자입니다.');
       }
 
-      // if (user.is_staff === false) {
-      //   throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
-      // }
+      if (user.is_staff === false) {
+        throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
+      }
 
       const activity = new ActivityModel();
       activity.content = dto.content;

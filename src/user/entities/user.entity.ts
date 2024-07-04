@@ -3,6 +3,7 @@ import { IsBoolean, IsDate, IsIn, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { ActivityModel } from 'src/activity/entities/acitivity.entity';
+import { SuggestionModel } from 'src/suggestion/entities/suggestion.entity';
 
 @Entity({
   name: 'users',
@@ -26,10 +27,6 @@ export class UserModel extends BaseModel {
   @IsString()
   @Column()
   phone: string;
-
-  @IsIn(['M', 'F'])
-  @Column()
-  gender: 'M' | 'F';
 
   @IsString()
   @Column()
@@ -55,4 +52,7 @@ export class UserModel extends BaseModel {
 
   @OneToMany(() => ActivityModel, (activity) => activity.User)
   activities: ActivityModel[];
+
+  @OneToMany(() => SuggestionModel, (suggestion) => suggestion.User)
+  suggestions: SuggestionModel[];
 }

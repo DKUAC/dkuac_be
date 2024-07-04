@@ -4,7 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class SignUpDto extends PickType(UserModel, [
   'name',
-  'gender',
   'major',
   'student_number',
   'birth',

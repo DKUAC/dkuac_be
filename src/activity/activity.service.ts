@@ -66,4 +66,29 @@ export class ActivityService {
       throw new BadRequestException('활동을 작성하는데 실패했습니다.');
     }
   }
+
+  async deleteActivity(userId: number, activityId: number) {
+    const user = await this.userService.findUserById(userId);
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 사용자입니다.');
+    }
+
+    if (user.is_staff === false) {
+      throw new BadRequestException('임원진만 글을 삭제할 수 있습니다.');
+    }
+
+    const activity = await this.activityRepository.findOne({
+      where: {
+        id: activityId,
+      },
+    });
+
+    if (!activity) {
+      throw new BadRequestException('존재하지 않는 글입니다.');
+    }
+
+    return this.activityRepository.delete({
+      id: activityId,
+    });
+  }
 }

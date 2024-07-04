@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -14,7 +15,7 @@ import {
 import { ActivityService } from './activity.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PostActivityDto } from './dto/activity.dto';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('activity')
 export class ActivityController {
@@ -47,5 +48,12 @@ export class ActivityController {
   @Get(':activityId')
   getActivityById(@Param('activityId') id: number) {
     return this.activityService.getActivityById(id);
+  }
+
+  @Delete(':activityId')
+  @UseGuards(JwtAuthGuard)
+  deleteActivity(@Req() req, @Param('activityId') id: number) {
+    const { sub } = req.user;
+    return this.activityService.deleteActivity(sub, id);
   }
 }

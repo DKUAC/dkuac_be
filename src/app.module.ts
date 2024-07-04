@@ -10,9 +10,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
-import { CacheModule } from '@nestjs/cache-manager';
 import { RentModule } from './rent/rent.module';
 import { ActivityModule } from './activity/activity.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
 
 const configService = new ConfigService();
 
@@ -44,6 +45,10 @@ const configService = new ConfigService();
     EmailModule,
     RentModule,
     ActivityModule,
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_FOLDER_PATH,
+      serveRoot: '/public',
+    }),
   ],
   controllers: [AppController],
   providers: [

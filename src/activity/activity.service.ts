@@ -39,7 +39,7 @@ export class ActivityService {
     return acitivity;
   }
 
-  async postAcitivity(userId: number, dto: PostActivityDto) {
+  async postAcitivity(userId: number, dto: PostActivityDto, image: string) {
     try {
       const user = await this.userService.findUserById(userId);
 
@@ -47,9 +47,9 @@ export class ActivityService {
         throw new BadRequestException('존재하지 않는 사용자입니다.');
       }
 
-      if (user.is_staff === false) {
-        throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
-      }
+      // if (user.is_staff === false) {
+      //   throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
+      // }
 
       const activity = new ActivityModel();
       activity.content = dto.content;
@@ -57,6 +57,7 @@ export class ActivityService {
       activity.semester =
         dto.date.getMonth() >= 3 && dto.date.getMonth() <= 8 ? 1 : 2;
       activity.year = dto.date.getFullYear();
+      activity.image = image;
       activity.User = user;
 
       await this.activityRepository.save(activity);

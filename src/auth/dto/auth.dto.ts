@@ -16,13 +16,6 @@ export class SignUpDto extends PickType(UserModel, [
   name: string;
 
   @ApiProperty({
-    description: '성별',
-    default: 'M',
-    enum: ['M', 'F'],
-  })
-  gender: 'M' | 'F';
-
-  @ApiProperty({
     description: '전공',
     default: '컴퓨터공학',
   })

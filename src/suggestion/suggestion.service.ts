@@ -19,7 +19,7 @@ export class SuggestionService {
       throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
     }
 
-    if (user.is_staff === false) {
+    if (user.isStaff === false) {
       throw new UnauthorizedException('임원진만 건의사항을 볼 수 있습니다.');
     }
 
@@ -28,11 +28,12 @@ export class SuggestionService {
 
   async postSuggestion(userId: number, content: string) {
     const user = await this.userService.findUserById(userId);
+
     if (!user) {
       throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
     }
 
-    if (user.current_semester_member === false) {
+    if (user.currentSemesterMember === false) {
       throw new UnauthorizedException(
         '현재 학기 회원만 건의사항을 올릴 수 있습니다.',
       );

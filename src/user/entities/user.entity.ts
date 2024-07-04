@@ -18,7 +18,7 @@ export class UserModel extends BaseModel {
   @Column({
     unique: true,
   })
-  student_number: number;
+  studentNumber: number;
 
   @IsDate()
   @Column()
@@ -40,15 +40,15 @@ export class UserModel extends BaseModel {
   @Column({
     default: false,
   })
-  is_staff: boolean = false;
+  isStaff: boolean = false;
 
   @IsBoolean()
   @Column({ default: true })
-  current_semester_member: boolean = true;
+  currentSemesterMember: boolean = true;
 
   @IsBoolean()
   @Column({ default: false })
-  is_paid: boolean = false;
+  isPaid: boolean = false;
 
   @OneToMany(() => ActivityModel, (activity) => activity.User)
   activities: ActivityModel[];

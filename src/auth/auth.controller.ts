@@ -53,8 +53,12 @@ export class AuthController {
   @ApiOperation({
     summary: '인증코드 생성 및 기입한 학번으로 인증번호 전송',
   })
+  @ApiBody({
+    type: CreateVerificationCodeDto,
+  })
   @Post('create-verification-code')
   async createVerificationCode(@Body() dto: CreateVerificationCodeDto) {
+    console.log(dto);
     await this.authService.createVerificationCodeAndSend(dto.studentNumber);
   }
 
@@ -109,7 +113,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('test')
   async test(@Req() req) {
-    console.log(req.user);
     return 'test';
   }
 }

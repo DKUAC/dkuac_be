@@ -47,7 +47,7 @@ export class ActivityService {
         throw new BadRequestException('존재하지 않는 사용자입니다.');
       }
 
-      if (user.is_staff === false) {
+      if (user.isStaff === false) {
         throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
       }
 
@@ -73,7 +73,7 @@ export class ActivityService {
       throw new BadRequestException('존재하지 않는 사용자입니다.');
     }
 
-    if (user.is_staff === false) {
+    if (user.isStaff === false) {
       throw new BadRequestException('임원진만 글을 삭제할 수 있습니다.');
     }
 

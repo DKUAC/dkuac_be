@@ -45,7 +45,7 @@ export class RentService {
 
       if (
         // user.is_paid === false ||
-        user.current_semester_member === false
+        user.currentSemesterMember === false
       ) {
         throw new BadRequestException(
           '회원 가입 또는 회비 납부 후 이용 가능합니다.',

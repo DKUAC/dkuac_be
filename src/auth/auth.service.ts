@@ -36,11 +36,11 @@ export class AuthService {
    */
 
   async signUp(dto: SignUpDto) {
-    const { name, phone, student_number } = dto;
+    const { name, phone, studentNumber } = dto;
     let newName = name + '|' + String(phone.slice(7));
 
     const password = phone.slice(3);
-    if (await this.findByStudentNumber(student_number)) {
+    if (await this.findByStudentNumber(studentNumber)) {
       throw new UnauthorizedException('이미 가입된 회원입니다.');
     }
 
@@ -69,9 +69,9 @@ export class AuthService {
   async logIn(dto: LogInDto) {
     const user = await this.userRepository.findOne({
       where: {
-        student_number: dto.student_number,
+        studentNumber: dto.studentNumber,
       },
-      select: ['id', 'student_number', 'password'],
+      select: ['id', 'studentNumber', 'password'],
     });
     if (!user) {
       throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
@@ -126,7 +126,7 @@ export class AuthService {
   async validateUser(studentNumber: number, pass: string): Promise<any> {
     const user = await this.userRepository.findOne({
       where: {
-        student_number: studentNumber,
+        studentNumber: studentNumber,
       },
     });
     const ok = bcrypt.compareSync(pass, user?.password);
@@ -138,7 +138,7 @@ export class AuthService {
     return null;
   }
 
-  async genUserToken(user: Pick<UserModel, 'student_number' | 'id'>) {
+  async genUserToken(user: Pick<UserModel, 'studentNumber' | 'id'>) {
     return {
       acessToken: await this.genAccessToken(user),
       refreshToken: await this.genRefreshToken(user),
@@ -160,8 +160,8 @@ export class AuthService {
     return result;
   }
 
-  private async genAccessToken(user: Pick<UserModel, 'student_number' | 'id'>) {
-    const payload = { studentNumber: user.student_number, sub: user.id };
+  private async genAccessToken(user: Pick<UserModel, 'studentNumber' | 'id'>) {
+    const payload = { studentNumber: user.studentNumber, sub: user.id };
     const acessToken = await this.jwtService.signAsync(
       {
         ...payload,
@@ -176,10 +176,8 @@ export class AuthService {
     return acessToken;
   }
 
-  private async genRefreshToken(
-    user: Pick<UserModel, 'student_number' | 'id'>,
-  ) {
-    const payload = { studentNumber: user.student_number, sub: user.id };
+  private async genRefreshToken(user: Pick<UserModel, 'studentNumber' | 'id'>) {
+    const payload = { studentNumber: user.studentNumber, sub: user.id };
     const refreshToken = await this.jwtService.signAsync(
       {
         ...payload,
@@ -194,9 +192,9 @@ export class AuthService {
     return refreshToken;
   }
 
-  private async findByStudentNumber(student_number: number) {
+  private async findByStudentNumber(studentNumber: number) {
     return await this.userRepository.existsBy({
-      student_number,
+      studentNumber,
     });
   }
 

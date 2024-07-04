@@ -15,11 +15,11 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      transform: true, // 파라미터 변환
+      whitelist: true, // 데코레이터가 없는 속성은 제거
+      forbidNonWhitelisted: true, // 데코레이터가 없는 속성이 있을 경우 에러 발생
       transformOptions: {
-        enableImplicitConversion: true,
+        enableImplicitConversion: true, // 타입 변환
       },
     }),
   );

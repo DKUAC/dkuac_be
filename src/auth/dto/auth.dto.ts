@@ -1,11 +1,12 @@
 import { UserModel } from 'src/user/entities/user.entity';
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
 export class SignUpDto extends PickType(UserModel, [
   'name',
   'major',
-  'student_number',
+  'studentNumber',
   'birth',
   'phone',
 ]) {
@@ -29,7 +30,7 @@ export class SignUpDto extends PickType(UserModel, [
     `,
     default: 32184045,
   })
-  student_number: number;
+  studentNumber: number;
 
   @ApiProperty({
     description: '생년월일',
@@ -45,14 +46,14 @@ export class SignUpDto extends PickType(UserModel, [
 }
 
 export class LogInDto extends PickType(UserModel, [
-  'student_number',
+  'studentNumber',
   'password',
 ]) {
   @ApiProperty({
     description: '학번',
     default: 32184045,
   })
-  student_number: number;
+  studentNumber: number;
 
   @ApiProperty({
     description: '비밀번호',
@@ -66,6 +67,7 @@ export class CreateVerificationCodeDto {
     description: '학번',
     default: 32184045,
   })
+  @IsNumber()
   studentNumber: number;
 }
 
@@ -74,12 +76,14 @@ export class IsVerifiedDto {
     description: '학번',
     default: 32184045,
   })
+  @IsNumber()
   studentNumber: number;
 
   @ApiProperty({
     description: '사용자가 입력한 인증번호',
     default: '123456',
   })
+  @IsString()
   codeFromUser: string;
 }
 
@@ -88,6 +92,7 @@ export class PasswordCheckDto {
     description: '비밀번호',
     default: '12345678',
   })
+  @IsString()
   password: string;
 }
 export class PasswordChangeDto {
@@ -95,5 +100,6 @@ export class PasswordChangeDto {
     description: '기존 비밀번호',
     default: '12345678',
   })
+  @IsString()
   newPassword: string;
 }

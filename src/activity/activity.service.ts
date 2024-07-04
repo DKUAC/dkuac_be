@@ -39,7 +39,7 @@ export class ActivityService {
     return acitivity;
   }
 
-  async postAcitivity(userId: number, dto: PostActivityDto, image: string) {
+  async postAcitivity(userId: number, dto: PostActivityDto, images: string[]) {
     try {
       const user = await this.userService.findUserById(userId);
 
@@ -57,7 +57,7 @@ export class ActivityService {
       activity.semester =
         dto.date.getMonth() >= 3 && dto.date.getMonth() <= 8 ? 1 : 2;
       activity.year = dto.date.getFullYear();
-      activity.image = image;
+      activity.images = JSON.stringify(images);
       activity.User = user;
 
       await this.activityRepository.save(activity);

@@ -7,13 +7,14 @@ import {
   Post,
   Req,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PostActivityDto } from './dto/activity.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('activity')
 export class ActivityController {
@@ -28,17 +29,19 @@ export class ActivityController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FilesInterceptor('images'))
   postAcitivity(
     @Req() req,
     @Body() dto: PostActivityDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() file: Express.Multer.File[],
   ) {
-    if (!file) {
+    if (file.length === 0 || !file) {
       throw new BadRequestException('활동 사진을 업로드해주세요');
     }
+
     const { sub } = req.user;
-    return this.activityService.postAcitivity(sub, dto, file.filename);
+    const fileNames = file.map((f) => f.filename);
+    return this.activityService.postAcitivity(sub, dto, fileNames);
   }
 
   @Get(':activityId')

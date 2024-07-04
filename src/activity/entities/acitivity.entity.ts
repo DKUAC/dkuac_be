@@ -27,18 +27,18 @@ export class ActivityModel extends BaseModel {
   date: Date;
 
   @Column()
-  // @Transform(
-  //   ({ value }) => value && `/${join(ACTIVITY_PUBLIC_IMAGE_PATH, value)}`,
-  // )
-  image: string;
+  images: string;
 
   @ManyToOne(() => UserModel, (user) => user.activities)
   User: UserModel;
 
   @AfterLoad()
   setImagePath() {
-    if (this.image) {
-      this.image = `/${join(ACTIVITY_PUBLIC_IMAGE_PATH, this.image)}`;
+    if (this.images) {
+      const imagesPath = JSON.parse(this.images);
+      this.images = imagesPath.map(
+        (image) => `/${join(ACTIVITY_PUBLIC_IMAGE_PATH, image)}`,
+      );
     }
   }
 }

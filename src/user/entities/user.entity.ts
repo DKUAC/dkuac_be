@@ -1,7 +1,8 @@
 import { BaseModel } from 'src/common/entities/base.entity';
 import { IsBoolean, IsDate, IsIn, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { ActivityModel } from 'src/activity/entities/acitivity.entity';
 
 @Entity({
   name: 'users',
@@ -51,4 +52,7 @@ export class UserModel extends BaseModel {
   @IsBoolean()
   @Column({ default: false })
   is_paid: boolean = false;
+
+  @OneToMany(() => ActivityModel, (activity) => activity.User)
+  activities: ActivityModel[];
 }

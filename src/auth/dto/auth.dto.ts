@@ -60,3 +60,40 @@ export class LogInDto extends PickType(UserModel, [
   })
   password: string;
 }
+
+export class CreateVerificationCodeDto {
+  @ApiProperty({
+    description: '학번',
+    default: 32184045,
+  })
+  studentNumber: number;
+}
+
+export class IsVerifiedDto {
+  @ApiProperty({
+    description: '학번',
+    default: 32184045,
+  })
+  studentNumber: number;
+
+  @ApiProperty({
+    description: '사용자가 입력한 인증번호',
+    default: '123456',
+  })
+  codeFromUser: string;
+}
+
+export class PasswordCheckDto {
+  @ApiProperty({
+    description: '비밀번호',
+    default: '12345678',
+  })
+  password: string;
+}
+export class PasswordChangeDto {
+  @ApiProperty({
+    description: '기존 비밀번호',
+    default: '12345678',
+  })
+  newPassword: string;
+}

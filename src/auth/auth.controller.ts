@@ -8,7 +8,14 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LogInDto, SignUpDto } from './dto/auth.dto';
+import {
+  CreateVerificationCodeDto,
+  IsVerifiedDto,
+  LogInDto,
+  PasswordChangeDto,
+  PasswordCheckDto,
+  SignUpDto,
+} from './dto/auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -47,8 +54,8 @@ export class AuthController {
     summary: '인증코드 생성 및 기입한 학번으로 인증번호 전송',
   })
   @Post('create-verification-code')
-  async createVerificationCode(@Body('studentNumber') studentNumber: number) {
-    await this.authService.createVerificationCodeAndSend(studentNumber);
+  async createVerificationCode(@Body() dto: CreateVerificationCodeDto) {
+    await this.authService.createVerificationCodeAndSend(dto.studentNumber);
   }
 
   @ApiOperation({
@@ -57,21 +64,25 @@ export class AuthController {
   })
   @Post('is-verified')
   async isVerified(
-    @Body('studentNumber') studentNumber: number,
-    @Body('codeFromUser') codeFromUser: string,
+    // @Body('studentNumber') studentNumber: number,
+    // @Body('codeFromUser') codeFromUser: string,
+    @Body() dto: IsVerifiedDto,
   ) {
-    return await this.authService.isVerified(studentNumber, codeFromUser);
+    return await this.authService.isVerified(
+      dto.studentNumber,
+      dto.codeFromUser,
+    );
   }
 
   @ApiBearerAuth()
   @ApiOperation({
-    summary: '비밀번호 변경',
+    summary: '비밀번호 확인',
   })
   @UseGuards(AuthGuard('jwt'))
   @Post('password-check')
-  async passwordCheck(@Request() req, @Body('password') password: string) {
+  async passwordCheck(@Request() req, @Body() dto: PasswordCheckDto) {
     const { userId } = req.user;
-    const result = await this.authService.passwordCheck(userId, password);
+    const result = await this.authService.passwordCheck(userId, dto.password);
     if (result === false) {
       return '비밀번호가 일치하지 않습니다.';
     }
@@ -86,12 +97,9 @@ export class AuthController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Post('password-change')
-  async passwordChange(
-    @Request() req,
-    @Body('newPassword') newPassword: string,
-  ) {
+  async passwordChange(@Request() req, @Body() dto: PasswordChangeDto) {
     const { userId } = req.user;
-    await this.authService.passwordChange(userId, newPassword);
+    await this.authService.passwordChange(userId, dto.newPassword);
     return {
       statusCode: 200,
       message: '비밀번호가 변경되었습니다.',

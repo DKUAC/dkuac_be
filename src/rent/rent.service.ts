@@ -43,10 +43,7 @@ export class RentService {
         throw new BadRequestException('회원 정보를 찾을 수 없습니다.');
       }
 
-      if (
-        // user.is_paid === false ||
-        user.currentSemesterMember === false
-      ) {
+      if (user.isPaid === false || user.currentSemesterMember === false) {
         throw new BadRequestException(
           '회원 가입 또는 회비 납부 후 이용 가능합니다.',
         );

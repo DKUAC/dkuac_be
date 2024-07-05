@@ -15,6 +15,7 @@ import { ActivityModule } from './activity/activity.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
 import { SuggestionModule } from './suggestion/suggestion.module';
+import { ScheduleModule } from './schedule/schedule.module';
 
 const configService = new ConfigService();
 
@@ -51,6 +52,7 @@ const configService = new ConfigService();
       serveRoot: '/public',
     }),
     SuggestionModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [

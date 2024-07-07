@@ -32,7 +32,6 @@ export class AuthService {
    *
    * 유저 탈퇴
    * 비밀번호 찾기
-   * 일반유저 staff로 변경
    */
 
   async signUp(dto: SignUpDto) {
@@ -53,10 +52,11 @@ export class AuthService {
     return user;
   }
 
-  async createVerificationCodeAndSend(studentNumber: number) {
+  async createVerificationCodeAndSend(studentNumber: number, message?: string) {
     const verifcationCode: string = this.generateVerifcationCode();
+    message = 'DKUAC 회원가입을 위한 인증번호';
     await this.cacheManager.set(`${studentNumber}`, verifcationCode, 3000000);
-    this.emailService.sendEmail(studentNumber, verifcationCode);
+    this.emailService.sendEmail(studentNumber, message, verifcationCode);
   }
 
   async isVerified(studentNumber: number, codeFromUser: string) {
@@ -164,6 +164,51 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return '권한 변경 성공';
+  }
+
+  async findMyPassword(studentNumber: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        studentNumber,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+
+    await this.createVerificationCodeAndSend(studentNumber, '비밀번호 찾기');
+    return '인증번호 전송 성공';
+  }
+
+  async generateNewPassword(studentNumber: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        studentNumber,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+
+    const newPassword = String(Math.floor(Math.random() * 1000000)).padStart(
+      6,
+      '0',
+    );
+    const saltRounds = Number(
+      this.configService.get<number>('BCRYPT_SALT_ROUNDS'),
+    );
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    const userObj = { ...user, password: hashedPassword };
+    await this.userRepository.save(userObj);
+
+    this.emailService.sendNewPassword(
+      studentNumber,
+      'DKUAC 새로운 비밀번호 전송.',
+      newPassword,
+    );
+    return newPassword;
   }
 
   private async isSamePassword(id: number, password: string) {

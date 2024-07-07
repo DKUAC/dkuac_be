@@ -11,6 +11,8 @@ import { AuthService } from './auth.service';
 import {
   ChangeUserToStaffDto,
   CreateVerificationCodeDto,
+  FindMyPasswordDto,
+  GenerateNewPasswordDto,
   IsVerifiedDto,
   LogInDto,
   PasswordChangeDto,
@@ -68,11 +70,7 @@ export class AuthController {
       '사용자로부터 입력받은 인증번호가 우리가 전송한 인증번호와 일치하는지 확인',
   })
   @Post('is-verified')
-  async isVerified(
-    // @Body('studentNumber') studentNumber: number,
-    // @Body('codeFromUser') codeFromUser: string,
-    @Body() dto: IsVerifiedDto,
-  ) {
+  async isVerified(@Body() dto: IsVerifiedDto) {
     return await this.authService.isVerified(
       dto.studentNumber,
       dto.codeFromUser,
@@ -83,11 +81,11 @@ export class AuthController {
   @ApiOperation({
     summary: '비밀번호 확인',
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Post('password-check')
   async passwordCheck(@Request() req, @Body() dto: PasswordCheckDto) {
-    const { userId } = req.user;
-    const result = await this.authService.passwordCheck(userId, dto.password);
+    const { sub } = req.user;
+    const result = await this.authService.passwordCheck(sub, dto.password);
     if (result === false) {
       return '비밀번호가 일치하지 않습니다.';
     }
@@ -100,11 +98,12 @@ export class AuthController {
   @ApiOperation({
     summary: '비밀번호 변경',
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Post('password-change')
   async passwordChange(@Request() req, @Body() dto: PasswordChangeDto) {
-    const { userId } = req.user;
-    await this.authService.passwordChange(userId, dto.newPassword);
+    const { sub } = req.user;
+    console.log(sub, dto.newPassword);
+    await this.authService.passwordChange(sub, dto.newPassword);
     return {
       statusCode: 200,
       message: '비밀번호가 변경되었습니다.',
@@ -129,5 +128,24 @@ export class AuthController {
   ) {
     const { userId } = dto;
     return await this.authService.changeNormalUserToStaff(userId);
+  }
+
+  @ApiOperation({
+    summary: '비밀번호 찾기',
+  })
+  @Post('find-my-password')
+  async findMyPassword(@Body() dto: FindMyPasswordDto) {
+    const { studentNumber } = dto;
+    const result = await this.authService.findMyPassword(studentNumber);
+    return result;
+  }
+
+  @ApiOperation({
+    summary: '새 비밀번호 생성',
+  })
+  @Post('generate-new-password')
+  async generateNewPassword(@Body() dto: GenerateNewPasswordDto) {
+    const { studentNumber } = dto;
+    return await this.authService.generateNewPassword(studentNumber);
   }
 }

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
+  ChangeUserToStaffDto,
   CreateVerificationCodeDto,
   IsVerifiedDto,
   LogInDto,
@@ -114,5 +115,19 @@ export class AuthController {
   @Get('test')
   async test(@Req() req) {
     return 'test';
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '일반 사용자를 스태프로 변경',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Post('change-normal-user-to-staff')
+  async changeNormalUserToStaff(
+    // @Req() req,
+    @Body() dto: ChangeUserToStaffDto,
+  ) {
+    const { userId } = dto;
+    return await this.authService.changeNormalUserToStaff(userId);
   }
 }

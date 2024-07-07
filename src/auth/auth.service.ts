@@ -28,11 +28,11 @@ export class AuthService {
   ) {}
 
   /**
-   *
    * Todo
    *
-   * [] 비밀번호 변경
-   * [] 로그인 구현
+   * 유저 탈퇴
+   * 비밀번호 찾기
+   * 일반유저 staff로 변경
    */
 
   async signUp(dto: SignUpDto) {
@@ -143,6 +143,27 @@ export class AuthService {
       acessToken: await this.genAccessToken(user),
       refreshToken: await this.genRefreshToken(user),
     };
+  }
+
+  async changeNormalUserToStaff(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+
+    if (user.isStaff === true) {
+      throw new BadRequestException('이미 staff입니다.');
+    }
+
+    user.isStaff = true;
+    await this.userRepository.save(user);
+
+    return '권한 변경 성공';
   }
 
   private async isSamePassword(id: number, password: string) {

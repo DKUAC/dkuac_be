@@ -103,3 +103,12 @@ export class PasswordChangeDto {
   @IsString()
   newPassword: string;
 }
+
+export class ChangeUserToStaffDto {
+  @ApiProperty({
+    description: '유저 id',
+    default: 1,
+  })
+  @IsNumber()
+  userId: number;
+}

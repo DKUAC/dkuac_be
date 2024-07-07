@@ -112,3 +112,21 @@ export class ChangeUserToStaffDto {
   @IsNumber()
   userId: number;
 }
+
+export class FindMyPasswordDto {
+  @ApiProperty({
+    description: '학번',
+    default: 32184045,
+  })
+  @IsNumber()
+  studentNumber: number;
+}
+
+export class GenerateNewPasswordDto {
+  @ApiProperty({
+    description: '학번',
+    default: 32184045,
+  })
+  @IsNumber()
+  studentNumber: number;
+}

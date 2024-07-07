@@ -2,7 +2,7 @@ import { BadRequestException, Module } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { ActivityController } from './activity.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActivityModel } from './entities/acitivity.entity';
+import { ActivityModel } from './entities/activity.entity';
 import { UserModel } from 'src/user/entities/user.entity';
 import { UserModule } from 'src/user/user.module';
 import { MulterModule } from '@nestjs/platform-express';

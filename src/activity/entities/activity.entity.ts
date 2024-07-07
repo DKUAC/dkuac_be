@@ -1,4 +1,3 @@
-import { Transform } from 'class-transformer';
 import { IsDate, IsIn, IsNumber, IsString } from 'class-validator';
 import { join } from 'path';
 import { ACTIVITY_PUBLIC_IMAGE_PATH } from 'src/common/const/path.const';

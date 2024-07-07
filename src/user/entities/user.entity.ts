@@ -2,7 +2,7 @@ import { BaseModel } from 'src/common/entities/base.entity';
 import { IsBoolean, IsDate, IsIn, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { ActivityModel } from 'src/activity/entities/acitivity.entity';
+import { ActivityModel } from 'src/activity/entities/activity.entity';
 import { SuggestionModel } from 'src/suggestion/entities/suggestion.entity';
 
 @Entity({

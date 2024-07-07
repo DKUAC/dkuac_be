@@ -35,6 +35,7 @@ const configService = new ConfigService();
       password: configService.get('DOCKER_MYSQL_PASSWORD'),
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
     ThrottlerModule.forRoot([
       {

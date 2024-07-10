@@ -1,4 +1,6 @@
 {
+  "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
+  "verbose": true,
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",

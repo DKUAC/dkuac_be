@@ -4,22 +4,23 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   const PORT = process.env.PORT || 3000;
 
   app.enableCors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: 'Content-Type,Authorization',
+    origin: true, // true -> 모든 url에 개방(개발 환경). 배포시 특정 url만 허용하도록 변경
+    credentials: true, // 프론트에서 credentials 설정을 true로!
   });
 
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true, // 파라미터 변환
-      whitelist: true, // 데코레이터가 없는 속성은 제거
-      forbidNonWhitelisted: true, // 데코레이터가 없는 속성이 있을 경우 에러 발생
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
       transformOptions: {
-        enableImplicitConversion: true, // 타입 변환
+        enableImplicitConversion: true,
       },
     }),
   );

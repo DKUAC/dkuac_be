@@ -38,9 +38,13 @@ export class AuthController {
     type: SignUpDto,
   })
   @Post('signup')
-  async signUp(@Body() dto: SignUpDto) {
-    const reuslt = await this.authService.signUp(dto);
-    return reuslt;
+  async signUp(@Body() dto: SignUpDto, @Res() res: Response) {
+    const result = await this.authService.signUp(dto);
+
+    // CORS 헤더 추가
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    return res.status(201).send(result);
   }
 
   @ApiOperation({

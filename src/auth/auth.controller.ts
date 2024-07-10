@@ -6,6 +6,7 @@ import {
   Request,
   Get,
   Req,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -23,6 +24,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -60,9 +62,18 @@ export class AuthController {
     type: CreateVerificationCodeDto,
   })
   @Post('create-verification-code')
-  async createVerificationCode(@Body() dto: CreateVerificationCodeDto) {
-    console.log(dto);
-    await this.authService.createVerificationCodeAndSend(dto.studentNumber);
+  async createVerificationCode(
+    @Body() dto: CreateVerificationCodeDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.authService.createVerificationCodeAndSend(
+      dto.studentNumber,
+    );
+    // CORS 헤더 추가
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    return res.status(201).send(result);
   }
 
   @ApiOperation({

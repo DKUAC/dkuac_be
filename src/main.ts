@@ -9,10 +9,14 @@ async function bootstrap() {
   });
   const PORT = process.env.PORT || 3000;
 
-  app.enableCors({
-    origin: true, // true -> 모든 url에 개방(개발 환경). 배포시 특정 url만 허용하도록 변경
-    credentials: true, // 프론트에서 credentials 설정을 true로!
-  });
+  const corsOptions = {
+    origin: ['http://localhost:3001'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
+  };
+
+  app.enableCors(corsOptions);
 
   app.useGlobalPipes(
     new ValidationPipe({

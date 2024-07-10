@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
@@ -7,20 +7,30 @@ import * as nodemailer from 'nodemailer';
 export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  public sendEmail(to: number, message: string, verificationCode: string) {
-    this.mailerService
-      .sendMail({
+  public async sendEmail(
+    to: number,
+    message: string,
+    verificationCode: string,
+  ) {
+    try {
+      const isSent = await this.mailerService.sendMail({
         to: `${to}@dankook.ac.kr`,
         from: 'noreply@dkuac.com',
         subject: `DKUAC ${message}을 위한 인증번호`,
         text: `사이트로 돌아가 ${verificationCode}를 입력해주세요`,
-      })
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((err) => {
-        console.error(err);
       });
+      return isSent;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+    // .then((result) => {
+    //   console.log(result);
+    //   return true;
+    // })
+    // .catch((err) => {
+    //   console.error(err);
+    //   throw new BadRequestException(err.message);
+    // });
   }
 
   public sendNewPassword(to: number, message: string, newPassword: string) {

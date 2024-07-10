@@ -56,7 +56,12 @@ export class AuthService {
     const verifcationCode: string = this.generateVerifcationCode();
     message = 'DKUAC 회원가입을 위한 인증번호';
     await this.cacheManager.set(`${studentNumber}`, verifcationCode, 3000000);
-    this.emailService.sendEmail(studentNumber, message, verifcationCode);
+    const isSent = this.emailService.sendEmail(
+      studentNumber,
+      message,
+      verifcationCode,
+    );
+    return '인증코드 전송 완료';
   }
 
   async isVerified(studentNumber: number, codeFromUser: string) {

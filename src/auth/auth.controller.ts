@@ -20,7 +20,6 @@ import {
   PasswordCheckDto,
   SignUpDto,
 } from './dto/auth.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -41,9 +40,6 @@ export class AuthController {
   async signUp(@Body() dto: SignUpDto, @Res() res: Response) {
     const result = await this.authService.signUp(dto);
 
-    // CORS 헤더 추가
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
     return res.status(201).send(result);
   }
 
@@ -73,9 +69,6 @@ export class AuthController {
     const result = await this.authService.createVerificationCodeAndSend(
       dto.studentNumber,
     );
-    // CORS 헤더 추가
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     return res.status(201).send(result);
   }
@@ -90,8 +83,6 @@ export class AuthController {
       dto.studentNumber,
       dto.codeFromUser,
     );
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     return res.status(200).send(result);
   }
@@ -129,22 +120,13 @@ export class AuthController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('test')
-  async test(@Req() req) {
-    return 'test';
-  }
-
   @ApiBearerAuth()
   @ApiOperation({
     summary: '일반 사용자를 스태프로 변경',
   })
   @UseGuards(JwtAuthGuard)
   @Post('change-normal-user-to-staff')
-  async changeNormalUserToStaff(
-    // @Req() req,
-    @Body() dto: ChangeUserToStaffDto,
-  ) {
+  async changeNormalUserToStaff(@Body() dto: ChangeUserToStaffDto) {
     const { userId } = dto;
     return await this.authService.changeNormalUserToStaff(userId);
   }

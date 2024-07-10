@@ -81,11 +81,15 @@ export class AuthController {
       '사용자로부터 입력받은 인증번호가 우리가 전송한 인증번호와 일치하는지 확인',
   })
   @Post('is-verified')
-  async isVerified(@Body() dto: IsVerifiedDto) {
-    return await this.authService.isVerified(
+  async isVerified(@Body() dto: IsVerifiedDto, @Res() res: Response) {
+    const result = await this.authService.isVerified(
       dto.studentNumber,
       dto.codeFromUser,
     );
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    return res.status(200).send(result);
   }
 
   @ApiBearerAuth()

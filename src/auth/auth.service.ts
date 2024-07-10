@@ -145,7 +145,7 @@ export class AuthService {
 
   async genUserToken(user: Pick<UserModel, 'studentNumber' | 'id'>) {
     return {
-      acessToken: await this.genAccessToken(user),
+      accessToken: await this.genAccessToken(user),
       refreshToken: await this.genRefreshToken(user),
     };
   }

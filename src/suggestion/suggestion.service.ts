@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SuggestionModel } from './entities/suggestion.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
+import { SuggestionDto } from './dto/suggestion.dto';
 
 @Injectable()
 export class SuggestionService {
@@ -26,7 +27,8 @@ export class SuggestionService {
     return this.suggestionRepository.find();
   }
 
-  async postSuggestion(userId: number, content: string) {
+  async postSuggestion(userId: number, dto: SuggestionDto) {
+    const { content } = dto;
     const user = await this.userService.findUserById(userId);
 
     if (!user) {

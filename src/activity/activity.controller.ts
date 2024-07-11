@@ -16,18 +16,26 @@ import { ActivityService } from './activity.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { EditActivityDto, PostActivityDto } from './dto/activity.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Activity')
 @Controller('activity')
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
   // 가장 최근 학기의 활동을 가져오는 API
   // 오늘 날짜를 기준으로 1학기는 3월~8월, 2학기는 9월~2월로 정의
+  @ApiOperation({
+    summary: '가장 최근 학기의 활동을 가져오는 API',
+  })
   @Get()
   getActivityBySemseter() {
     return this.activityService.getActivityBySemseter();
   }
 
+  @ApiOperation({
+    summary: '활동 등록',
+  })
   @Post()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('images', 3))
@@ -45,11 +53,17 @@ export class ActivityController {
     return this.activityService.postActivity(sub, dto, fileNames);
   }
 
+  @ApiOperation({
+    summary: '특정 활동 조회',
+  })
   @Get(':activityId')
   getActivityById(@Param('activityId') id: number) {
     return this.activityService.getActivityById(id);
   }
 
+  @ApiOperation({
+    summary: '활동 수정',
+  })
   @Put(':activityId')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('images'))
@@ -67,6 +81,9 @@ export class ActivityController {
     return this.activityService.updateActivity(sub, id, dto);
   }
 
+  @ApiOperation({
+    summary: '활동 삭제',
+  })
   @Delete(':activityId')
   @UseGuards(JwtAuthGuard)
   deleteActivity(@Req() req, @Param('activityId') id: number) {

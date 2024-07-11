@@ -33,9 +33,6 @@ export class AuthController {
   @ApiOperation({
     summary: '회원가입',
   })
-  @ApiBody({
-    type: SignUpDto,
-  })
   @Post('signup')
   async signUp(@Body() dto: SignUpDto, @Res() res: Response) {
     const result = await this.authService.signUp(dto);
@@ -45,9 +42,6 @@ export class AuthController {
 
   @ApiOperation({
     summary: '로그인',
-  })
-  @ApiBody({
-    type: LogInDto,
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')

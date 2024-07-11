@@ -16,11 +16,16 @@ import {
   EditScheduleDto,
   GetSheduleDto,
 } from './dto/schedule.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('schedule')
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
+  @ApiOperation({
+    summary: '스케줄 생성',
+  })
   @UseGuards(JwtAuthGuard)
   @Post()
   async createSchedule(
@@ -31,11 +36,17 @@ export class ScheduleController {
     return await this.scheduleService.createSchedule(sub, createScheduleDto);
   }
 
+  @ApiOperation({
+    summary: '스케줄 조회',
+  })
   @Get()
   async getSchedule(@Body() getScheduleDto: GetSheduleDto) {
     return await this.scheduleService.getSchedule(getScheduleDto);
   }
 
+  @ApiOperation({
+    summary: '스케줄 수정',
+  })
   @UseGuards(JwtAuthGuard)
   @Put()
   async editSchedule(@Req() req, @Body() editScheduleDto: EditScheduleDto) {
@@ -43,6 +54,9 @@ export class ScheduleController {
     return await this.scheduleService.editSchedule(sub, editScheduleDto);
   }
 
+  @ApiOperation({
+    summary: '스케줄 삭제',
+  })
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteSchedule(

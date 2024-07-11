@@ -31,6 +31,7 @@ export class ActivityService {
       where: {
         id,
       },
+      relations: ['Author', 'Comments'],
     });
 
     if (!activity) {
@@ -59,7 +60,7 @@ export class ActivityService {
         dto.date.getMonth() >= 3 && dto.date.getMonth() <= 8 ? 1 : 2;
       activity.year = dto.date.getFullYear();
       activity.images = JSON.stringify(images);
-      activity.User = user;
+      activity.Author = user;
 
       await this.activityRepository.save(activity);
       return activity;
@@ -148,5 +149,20 @@ export class ActivityService {
     return this.activityRepository.delete({
       id: activityId,
     });
+  }
+
+  async getActivityComments(activityId: number) {
+    const activity = await this.activityRepository.findOne({
+      where: {
+        id: activityId,
+      },
+      relations: ['comments'],
+    });
+
+    if (!activity) {
+      throw new BadRequestException('존재하지 않는 글입니다.');
+    }
+
+    return activity.Comments;
   }
 }

@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { ActivityModel } from 'src/activity/entities/activity.entity';
 import { SuggestionModel } from 'src/suggestion/entities/suggestion.entity';
+import { CommentModel } from 'src/activity/comment/entities/comment.entity';
 
 @Entity({
   name: 'users',
@@ -50,9 +51,12 @@ export class UserModel extends BaseModel {
   @Column({ default: false })
   isPaid: boolean = false;
 
-  @OneToMany(() => ActivityModel, (activity) => activity.User)
+  @OneToMany(() => ActivityModel, (activity) => activity.Author)
   activities: ActivityModel[];
 
   @OneToMany(() => SuggestionModel, (suggestion) => suggestion.User)
   suggestions: SuggestionModel[];
+
+  @OneToMany(() => CommentModel, (comment) => comment.Author)
+  Comments: CommentModel[];
 }

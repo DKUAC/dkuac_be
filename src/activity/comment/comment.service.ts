@@ -40,10 +40,55 @@ export class CommentService {
     };
   }
 
-  async putComment(
-    activityId: number,
-    commentId: number,
-    userId: number,
-    dto: UpdateCommentDto,
-  ) {}
+  async putComment(commentId: number, userId: number, dto: UpdateCommentDto) {
+    const { content } = dto;
+
+    const comment = await this.commentRepository.findOne({
+      where: {
+        id: commentId,
+      },
+      relations: ['Author'],
+    });
+    if (!comment) {
+      throw new BadRequestException('존재하지 않는 댓글입니다.');
+    }
+
+    if (comment.Author.id !== userId) {
+      throw new BadRequestException('작성자만 수정할 수 있습니다.');
+    }
+
+    await this.commentRepository.save({
+      ...comment,
+      content,
+    });
+
+    return {
+      message: '댓글이 수정되었습니다.',
+    };
+  }
+
+  async deleteComment(commentId: number, userId: number) {
+    const comment = await this.commentRepository.findOne({
+      where: {
+        id: commentId,
+      },
+      relations: ['Author'],
+    });
+
+    if (!comment) {
+      throw new BadRequestException('존재하지 않는 댓글입니다.');
+    }
+
+    if (comment.Author.id !== userId) {
+      throw new BadRequestException('작성자만 삭제할 수 있습니다.');
+    }
+
+    await this.commentRepository.delete({
+      id: commentId,
+    });
+
+    return {
+      message: '댓글이 삭제되었습니다.',
+    };
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -40,20 +41,27 @@ export class CommentController {
     return await this.commentService.postComment(activityId, sub, dto);
   }
 
+  @ApiOperation({
+    summary: '특정 활동글의 댓글 수정',
+  })
   @Put(':commentId')
   @UseGuards(JwtAuthGuard)
   async putComment(
-    @Param('activityId') activityId: number,
     @Param('commentId') commentId: number,
     @Req() req,
     @Body() dto: UpdateCommentDto,
   ) {
     const { sub } = req.user;
-    return await this.commentService.putComment(
-      activityId,
-      commentId,
-      sub,
-      dto,
-    );
+    return await this.commentService.putComment(commentId, sub, dto);
+  }
+
+  @ApiOperation({
+    summary: '특정 활동글의 댓글 삭제',
+  })
+  @Delete(':commentId')
+  @UseGuards(JwtAuthGuard)
+  async deleteComment(@Param('commentId') commentId, @Req() req) {
+    const { sub } = req.user;
+    return await this.commentService.deleteComment(commentId, sub);
   }
 }

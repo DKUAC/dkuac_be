@@ -17,6 +17,7 @@ import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
 import { SuggestionModule } from './suggestion/suggestion.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { LogInterceptor } from './common/interceptor/log.interceptor';
+import { CommentModule } from './activity/comment/comment.module';
 
 const configService = new ConfigService();
 
@@ -55,6 +56,7 @@ const configService = new ConfigService();
     }),
     SuggestionModule,
     ScheduleModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [

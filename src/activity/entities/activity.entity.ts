@@ -1,9 +1,10 @@
-import { IsDate, IsIn, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { join } from 'path';
 import { ACTIVITY_PUBLIC_IMAGE_PATH } from 'src/common/const/path.const';
 import { BaseModel } from 'src/common/entities/base.entity';
 import { UserModel } from 'src/user/entities/user.entity';
-import { AfterLoad, Column, Entity, ManyToOne } from 'typeorm';
+import { AfterLoad, Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { CommentModel } from '../comment/entities/comment.entity';
 
 @Entity({
   name: 'activities',
@@ -29,7 +30,10 @@ export class ActivityModel extends BaseModel {
   images: string;
 
   @ManyToOne(() => UserModel, (user) => user.activities)
-  User: UserModel;
+  Author: UserModel;
+
+  @OneToMany(() => CommentModel, (comment) => comment.Activity)
+  Comments: CommentModel[];
 
   @AfterLoad()
   setImagePath() {

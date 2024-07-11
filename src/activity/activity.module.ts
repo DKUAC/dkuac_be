@@ -10,8 +10,10 @@ import { extname } from 'path';
 import * as multer from 'multer';
 import { ACTIVITY_IMAGE_PATH } from 'src/common/const/path.const';
 import { v4 as uuid } from 'uuid';
+import { CommentModel } from './comment/entities/comment.entity';
 
 @Module({
+  exports: [ActivityService],
   imports: [
     TypeOrmModule.forFeature([ActivityModel, UserModel]),
     UserModule,

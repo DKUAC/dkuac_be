@@ -1,7 +1,7 @@
 import { PartialType, PickType } from '@nestjs/mapped-types';
 import { ActivityModel } from '../entities/activity.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class PostActivityDto extends PickType(ActivityModel, [
   'content',
@@ -11,6 +11,7 @@ export class PostActivityDto extends PickType(ActivityModel, [
     description: '활동 내용',
     default: '외벽 활동',
   })
+  @IsNotEmpty()
   content: string;
 
   @ApiProperty({

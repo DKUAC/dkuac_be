@@ -143,4 +143,12 @@ export class AuthController {
     const { studentNumber } = dto;
     return await this.authService.generateNewPassword(studentNumber);
   }
+
+  @Post('token/access')
+  @UseGuards(JwtAuthGuard)
+  async postAccessToken(@Request() req) {
+    const { user } = req;
+    const result = await this.authService.rotateToken(user);
+    return result;
+  }
 }

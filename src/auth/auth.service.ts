@@ -216,6 +216,19 @@ export class AuthService {
     return newPassword;
   }
 
+  async rotateToken(user) {
+    if (user.type !== 'refresh') {
+      throw new BadRequestException(
+        '토큰 재발급은 Refresh Token으로만 가능합니다.',
+      );
+    }
+
+    const accessToken = await this.genAccessToken(user);
+    return {
+      accessToken,
+    };
+  }
+
   private async isSamePassword(id: number, password: string) {
     const user = await this.userRepository.findOne({
       where: {

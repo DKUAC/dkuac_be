@@ -216,14 +216,9 @@ export class AuthService {
     return newPassword;
   }
 
-  async rotateToken(user) {
-    if (user.type !== 'refresh') {
-      throw new BadRequestException(
-        '토큰 재발급은 Refresh Token으로만 가능합니다.',
-      );
-    }
+  async rotateToken(rawToken: string) {
     // refresh token 검증 로직 추가
-    console.log(user);
+    const user = await this.getInfosInToken(rawToken);
     // const isVerified = await this.jwtService.verifyAsync();
     const accessToken = await this.genAccessToken(user);
     return {
@@ -231,18 +226,17 @@ export class AuthService {
     };
   }
 
-  async isTokenExpired(rawToken: string) {
-    console.log('in token expired service');
+  async getInfosInToken(rawToken: string) {
     try {
       const result = await this.jwtService.verify(rawToken);
       return result;
     } catch (error) {
-      throw new Error(error);
+      throw new UnauthorizedException(error.message);
     }
   }
 
-  async getRefreshTokenExpiresTime(refreshToken: string) {
-    const { iat, exp } = await this.jwtService.verifyAsync(refreshToken);
+  async getTokenExpiresTime(token: string) {
+    const { iat, exp } = await this.jwtService.verifyAsync(token);
     return exp - iat;
   }
 

@@ -151,4 +151,10 @@ export class AuthController {
     const result = await this.authService.rotateToken(user);
     return result;
   }
+
+  @Get('is-token-expired')
+  @UseGuards(JwtAuthGuard)
+  async checkTokenExpired(@Request() req) {
+    return req.user;
+  }
 }

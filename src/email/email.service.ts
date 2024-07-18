@@ -23,14 +23,6 @@ export class EmailService {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-    // .then((result) => {
-    //   console.log(result);
-    //   return true;
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    //   throw new BadRequestException(err.message);
-    // });
   }
 
   public sendNewPassword(to: number, message: string, newPassword: string) {

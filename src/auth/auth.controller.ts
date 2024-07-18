@@ -23,7 +23,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Response } from 'express';
+import { Response, Request as ExpressRequest } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -47,13 +47,20 @@ export class AuthController {
   @Post('login')
   async login(@Request() req, @Res() res: Response) {
     const getRefreshTokenExpirestime =
-      await this.authService.getRefreshTokenExpiresTime(req.user.refreshToken);
+      await this.authService.getTokenExpiresTime(req.user.refreshToken);
     res.cookie('refreshToken', req.user.refreshToken, {
       httpOnly: true,
       maxAge: getRefreshTokenExpirestime * 1000,
     });
+    const getAccessTokenExpiredTime =
+      await this.authService.getTokenExpiresTime(req.user.accessToken);
+    let date = new Date();
+    date.setSeconds(date.getSeconds() + getAccessTokenExpiredTime);
     delete req.user.refreshToken;
-    return res.json(req.user);
+    return res.json({
+      ...req.user,
+      expiredTime: date,
+    });
   }
 
   @ApiOperation({
@@ -150,17 +157,16 @@ export class AuthController {
     return await this.authService.generateNewPassword(studentNumber);
   }
 
-  @Post('token/access')
-  async postAccessToken(@Request() req) {
-    const { user } = req;
-    const result = await this.authService.rotateToken(user);
+  @Get('token/access')
+  async postAccessToken(@Request() req: ExpressRequest) {
+    const refreshToken = req.cookies['refreshToken'];
+    const result = await this.authService.rotateToken(refreshToken);
     return result;
   }
 
   @Get('is-token-expired')
-  async checkTokenExpired(@Headers('authorization') tokenToString) {
-    const rawToken = tokenToString.split(' ')[1];
-    const result = await this.authService.isTokenExpired(rawToken);
-    return result;
+  @UseGuards(JwtAuthGuard)
+  async checkTokenExpired(@Req() req) {
+    return true;
   }
 }

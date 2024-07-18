@@ -7,6 +7,7 @@ import {
   Get,
   Req,
   Res,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -15,7 +16,6 @@ import {
   FindMyPasswordDto,
   GenerateNewPasswordDto,
   IsVerifiedDto,
-  LogInDto,
   PasswordChangeDto,
   PasswordCheckDto,
   SignUpDto,
@@ -45,8 +45,15 @@ export class AuthController {
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return req.user;
+  async login(@Request() req, @Res() res: Response) {
+    const getRefreshTokenExpirestime =
+      await this.authService.getRefreshTokenExpiresTime(req.user.refreshToken);
+    res.cookie('refreshToken', req.user.refreshToken, {
+      httpOnly: true,
+      maxAge: getRefreshTokenExpirestime * 1000,
+    });
+    delete req.user.refreshToken;
+    return res.json(req.user);
   }
 
   @ApiOperation({
@@ -106,7 +113,6 @@ export class AuthController {
   @Post('password-change')
   async passwordChange(@Request() req, @Body() dto: PasswordChangeDto) {
     const { sub } = req.user;
-    console.log(sub, dto.newPassword);
     await this.authService.passwordChange(sub, dto.newPassword);
     return {
       statusCode: 200,
@@ -145,10 +151,16 @@ export class AuthController {
   }
 
   @Post('token/access')
-  @UseGuards(JwtAuthGuard)
   async postAccessToken(@Request() req) {
     const { user } = req;
     const result = await this.authService.rotateToken(user);
+    return result;
+  }
+
+  @Get('is-token-expired')
+  async checkTokenExpired(@Headers('authorization') tokenToString) {
+    const rawToken = tokenToString.split(' ')[1];
+    const result = await this.authService.isTokenExpired(rawToken);
     return result;
   }
 }

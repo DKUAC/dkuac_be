@@ -30,8 +30,8 @@ export class ScheduleService {
       throw new UnauthorizedException('임원진만 일정을 추가할 수 있습니다.');
     }
 
-    const { content, date, location } = createScheduleDto;
-    if (!content || !date || !location) {
+    const { title, content, date } = createScheduleDto;
+    if (!title || !content || !date) {
       throw new BadRequestException('일정 내용, 날짜, 장소는 필수입니다.');
     }
     try {
@@ -41,13 +41,13 @@ export class ScheduleService {
       const day = scheduleDate.getDate();
       const semester = month >= 3 && month <= 8 ? 1 : 2;
       const schedule = this.scheduleRepository.create({
+        title,
         content,
         date: scheduleDate,
         year,
         month,
         day,
         semester,
-        location,
       });
       await this.scheduleRepository.save(schedule);
       return schedule;

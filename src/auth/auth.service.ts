@@ -222,11 +222,28 @@ export class AuthService {
         '토큰 재발급은 Refresh Token으로만 가능합니다.',
       );
     }
-
+    // refresh token 검증 로직 추가
+    console.log(user);
+    // const isVerified = await this.jwtService.verifyAsync();
     const accessToken = await this.genAccessToken(user);
     return {
       accessToken,
     };
+  }
+
+  async isTokenExpired(rawToken: string) {
+    console.log('in token expired service');
+    try {
+      const result = await this.jwtService.verify(rawToken);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getRefreshTokenExpiresTime(refreshToken: string) {
+    const { iat, exp } = await this.jwtService.verifyAsync(refreshToken);
+    return exp - iat;
   }
 
   private async isSamePassword(id: number, password: string) {

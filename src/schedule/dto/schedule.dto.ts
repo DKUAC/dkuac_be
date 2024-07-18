@@ -4,23 +4,23 @@ import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateScheduleDto extends PickType(ScheduleModel, [
+  'title',
   'content',
   'date',
-  'location',
 ]) {
+  @ApiProperty({
+    description: '일정 제목',
+    example: '법화산 등산',
+  })
+  @IsString()
+  title: string;
+
   @ApiProperty({
     description: '일정 내용',
     example: '등산',
   })
   @IsString()
   content: string;
-
-  @ApiProperty({
-    description: '장소',
-    example: '북한산',
-  })
-  @IsString()
-  location: string;
 
   @ApiProperty({
     description: '날짜',
@@ -58,20 +58,19 @@ export class EditScheduleDto {
   scheduleId: number;
 
   @ApiProperty({
+    description: '일정 제목',
+    example: '법화산 등산',
+  })
+  @IsString()
+  title: string;
+
+  @ApiProperty({
     description: '일정 내용',
     example: '등산',
   })
   @IsString()
   @IsOptional()
   content: string;
-
-  @ApiProperty({
-    description: '장소',
-    example: '북한산',
-  })
-  @IsString()
-  @IsOptional()
-  location: string;
 
   @ApiProperty({
     description: '날짜',

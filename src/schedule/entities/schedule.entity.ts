@@ -7,6 +7,9 @@ import { Column, Entity } from 'typeorm';
 })
 export class ScheduleModel extends BaseModel {
   @Column()
+  title: string;
+
+  @Column()
   content: string;
 
   @Column()
@@ -24,8 +27,4 @@ export class ScheduleModel extends BaseModel {
   @IsIn([1, 2])
   @Column()
   semester: 1 | 2;
-
-  @IsString()
-  @Column()
-  location: string;
 }

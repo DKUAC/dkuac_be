@@ -76,7 +76,7 @@ export class AuthService {
       where: {
         studentNumber: dto.studentNumber,
       },
-      select: ['id', 'studentNumber', 'password'],
+      select: ['id', 'studentNumber', 'password', 'isStaff'],
     });
     if (!user) {
       throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
@@ -90,6 +90,7 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        isStaff: user.isStaff,
       },
       ...tokens,
     };

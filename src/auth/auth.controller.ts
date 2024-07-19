@@ -7,7 +7,6 @@ import {
   Get,
   Req,
   Res,
-  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {

@@ -64,6 +64,17 @@ export class AuthController {
   }
 
   @ApiOperation({
+    summary: '로그아웃',
+  })
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('refreshToken');
+    return {
+      message: '로그아웃 되었습니다.',
+    };
+  }
+
+  @ApiOperation({
     summary: '인증코드 생성 및 기입한 학번으로 인증번호 전송',
   })
   @ApiBody({
@@ -157,6 +168,9 @@ export class AuthController {
     return await this.authService.generateNewPassword(studentNumber);
   }
 
+  @ApiOperation({
+    summary: '토큰 재발급',
+  })
   @Get('token/access')
   async postAccessToken(@Request() req: ExpressRequest) {
     const refreshToken = req.cookies['refreshToken'];

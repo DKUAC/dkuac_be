@@ -46,11 +46,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Res() res: Response) {
-    const getRefreshTokenExpirestime =
-      await this.authService.getTokenExpiresTime(req.user.refreshToken);
+    const refreshTokenExpirestime = await this.authService.getTokenExpiresTime(
+      req.user.refreshToken,
+    );
     res.cookie('refreshToken', req.user.refreshToken, {
       httpOnly: true,
-      maxAge: getRefreshTokenExpirestime * 1000,
+      maxAge: refreshTokenExpirestime * 1000,
     });
     const getAccessTokenExpiredTime =
       await this.authService.getTokenExpiresTime(req.user.accessToken);

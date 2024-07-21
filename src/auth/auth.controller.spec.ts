@@ -5,6 +5,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { ExecutionContext } from '@nestjs/common';
 import { SignUpDto } from './dto/auth.dto';
 import { UserModel } from 'src/user/entities/user.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 type CustomResponse = Partial<Response> & {
   cookie: jest.Mock;
@@ -58,6 +59,8 @@ describe('AuthController', () => {
         // 가드의 모킹 구현 지정 , useValue에 전달된 객체는 가드의 모킹 버전 제공
         canActiate: (context: ExecutionContext) => true, // canActivate는 가드 인터페이스에서 라우터 핸들러가 실행될지 여부를 결정함. 이를 true로 설정해 테스트 중 가드의 인증 체크를 우회함.
       })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActiate: (context: ExecutionContext) => true })
       .compile();
 
     controller = module.get<AuthController>(AuthController);

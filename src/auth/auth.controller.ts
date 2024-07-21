@@ -172,12 +172,15 @@ export class AuthController {
     summary: '토큰 재발급',
   })
   @Get('token/access')
-  async postAccessToken(@Request() req: ExpressRequest) {
+  async getAccessToken(@Request() req: ExpressRequest) {
     const refreshToken = req.cookies['refreshToken'];
     const result = await this.authService.rotateToken(refreshToken);
     return result;
   }
 
+  @ApiOperation({
+    summary: '토큰 만료 확인',
+  })
   @Get('is-token-expired')
   @UseGuards(JwtAuthGuard)
   async checkTokenExpired(@Req() req) {

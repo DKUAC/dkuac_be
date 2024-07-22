@@ -18,7 +18,7 @@ export class RentService {
 
   async checkShoeCount() {
     return await this.shoeRepository.find({
-      select: ['size', 'count'],
+      select: ['size', 'count', 'rentable'],
     });
   }
 
@@ -43,11 +43,11 @@ export class RentService {
         throw new BadRequestException('회원 정보를 찾을 수 없습니다.');
       }
 
-      if (user.isPaid === false || user.currentSemesterMember === false) {
-        throw new BadRequestException(
-          '회원 가입 또는 회비 납부 후 이용 가능합니다.',
-        );
-      }
+      // if (user.isPaid === false || user.currentSemesterMember === false) {
+      //   throw new BadRequestException(
+      //     '회원 가입 또는 회비 납부 후 이용 가능합니다.',
+      //   );
+      // }
 
       const shoe = await this.shoeRepository.findOne({
         where: {
@@ -67,11 +67,11 @@ export class RentService {
         throw new BadRequestException('1인당 1개의 신발만 대여 가능합니다.');
       }
 
-      if (!shoe || shoe.count === 0) {
+      if (!shoe || shoe.rentable === 0) {
         throw new BadRequestException('해당 사이즈의 신발이 없습니다.');
       }
 
-      shoe.count -= 1;
+      shoe.rentable -= 1;
       const rent = new RentModel();
       rent.size = size;
       rent.User = user;
@@ -123,7 +123,12 @@ export class RentService {
         throw new BadRequestException('해당 사이즈의 신발이 없습니다.');
       }
 
-      shoe.count += 1;
+      shoe.rentable += 1;
+      if (shoe.rentable > shoe.count) {
+        throw new BadRequestException(
+          '해당 사이즈의 신발이 모두 반납되었습니다.',
+        );
+      }
       await this.shoeRepository.save(shoe);
       await this.rentRepository.delete({
         id: rent.id,
@@ -180,6 +185,7 @@ export class RentService {
           shoe.count = 2;
           break;
       }
+      shoe.rentable = shoe.count;
       await this.shoeRepository.save(shoe);
     }
   }

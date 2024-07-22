@@ -27,7 +27,7 @@ export class RentController {
   }
 
   @ApiOperation({
-    summary: '대여 가능 여부 확인',
+    summary: '암벽화 대여 기록 확인',
   })
   @UseGuards(JwtAuthGuard)
   @Get('check-rent')
@@ -61,11 +61,11 @@ export class RentController {
     return await this.rentService.returnShoe(sub, dto.size);
   }
 
-  @ApiOperation({
-    summary: '신발 추가',
-  })
-  @Get('create-shoe')
-  async createShoe() {
-    return await this.rentService.createShoe();
-  }
+  // @ApiOperation({
+  //   summary: '신발 추가',
+  // })
+  // @Get('create-shoe')
+  // async createShoe() {
+  //   return await this.rentService.createShoe();
+  // }
 }

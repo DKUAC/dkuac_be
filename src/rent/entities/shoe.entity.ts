@@ -13,4 +13,8 @@ export class ShoeModel extends BaseModel {
   @IsNumber()
   @Column()
   count: number;
+
+  @IsNumber()
+  @Column()
+  rentable: number;
 }

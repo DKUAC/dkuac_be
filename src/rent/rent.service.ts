@@ -139,10 +139,47 @@ export class RentService {
   }
 
   async createShoe() {
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 12; i++) {
       const shoe = new ShoeModel();
       shoe.size = 230 + i * 5;
-      shoe.count = 10;
+      switch (shoe.size) {
+        case 230:
+          shoe.count = 0;
+          break;
+        case 235:
+          shoe.count = 2;
+          break;
+        case 240:
+          shoe.count = 4;
+          break;
+        case 245:
+          shoe.count = 2;
+          break;
+        case 250:
+          shoe.count = 3;
+          break;
+        case 255:
+          shoe.count = 1;
+          break;
+        case 260:
+          shoe.count = 3;
+          break;
+        case 265:
+          shoe.count = 2;
+          break;
+        case 270:
+          shoe.count = 4;
+          break;
+        case 275:
+          shoe.count = 1;
+          break;
+        case 280:
+          shoe.count = 3;
+          break;
+        case 285:
+          shoe.count = 2;
+          break;
+      }
       await this.shoeRepository.save(shoe);
     }
   }

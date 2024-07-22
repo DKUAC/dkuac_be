@@ -6,11 +6,11 @@ import {
   Post,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { RentService } from './rent.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { RentShoeDto } from './dto/rent.dto';
 
 @ApiTags('rent')
 @Controller('rent')
@@ -40,12 +40,12 @@ export class RentController {
   })
   @UseGuards(JwtAuthGuard)
   @Post()
-  async rentShoe(@Req() req, @Body('size') size: number) {
+  async rentShoe(@Req() req, @Body() dto: RentShoeDto) {
     const { sub } = req.user;
-    if (!size) {
+    if (!dto.size) {
       throw new BadRequestException('사이즈를 입력해주세요.');
     }
-    return await this.rentService.rentShoe(sub, size);
+    return await this.rentService.rentShoe(sub, dto.size);
   }
 
   @ApiOperation({
@@ -53,12 +53,12 @@ export class RentController {
   })
   @UseGuards(JwtAuthGuard)
   @Post('return')
-  async returnShoe(@Req() req, @Body('size') size: number) {
+  async returnShoe(@Req() req, @Body() dto: RentShoeDto) {
     const { sub } = req.user;
-    if (!size) {
+    if (!dto.size) {
       throw new BadRequestException('사이즈를 입력해주세요.');
     }
-    return await this.rentService.returnShoe(sub, size);
+    return await this.rentService.returnShoe(sub, dto.size);
   }
 
   @ApiOperation({

@@ -42,9 +42,9 @@ describe('ScheduleController', () => {
                 schedules: [],
               };
             }),
-            editSchedule: jest.fn((userId, editScheduleDto) => {
-              return Promise.resolve(mockReturn);
-            }),
+            editSchedule: jest.fn((userId, editScheduleDto) =>
+              Promise.resolve(mockReturn),
+            ),
             deleteSchedule: jest.fn((sub, deleteScheduleDto) =>
               Promise.resolve(mockReturn),
             ),

@@ -4,6 +4,7 @@ import { RentService } from './rent.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BadRequestException, ExecutionContext } from '@nestjs/common';
 import { RentShoeDto } from './dto/rent.dto';
+import { RentModel } from './entities/rent.entity';
 
 describe('RentController', () => {
   let controller: RentController;
@@ -14,8 +15,10 @@ describe('RentController', () => {
       sub: 1,
     },
   };
+  let mockRentModelReturn: RentModel;
   beforeEach(async () => {
     jest.resetAllMocks();
+    mockRentModelReturn = new RentModel();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [RentController],
       providers: [
@@ -26,6 +29,12 @@ describe('RentController', () => {
             checkRent: jest.fn().mockReturnValue(mockReturn),
             rentShoe: jest.fn().mockReturnValue(mockReturn),
             returnShoe: jest.fn().mockReturnValue(mockReturn),
+            getMyRentRecord: jest.fn((userId: number) => {
+              return {
+                message: 'test message',
+                data: mockRentModelReturn,
+              };
+            }),
           },
         },
       ],
@@ -47,6 +56,18 @@ describe('RentController', () => {
     // THEN
     expect(rentService.checkShoeCount).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockReturn);
+  });
+
+  test('내 암벽화 대여 기록 확인하기', async () => {
+    // GIVEN
+    // WHEN
+    const result = await controller.getMyRentRecord(mockRequest);
+    // THEN
+    expect(rentService.getMyRentRecord).toHaveBeenCalledWith(1);
+    expect(result).toEqual({
+      message: 'test message',
+      data: mockRentModelReturn,
+    });
   });
 
   test('암벽화 대여한 사람 있는지 확인', async () => {

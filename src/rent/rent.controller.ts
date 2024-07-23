@@ -36,6 +36,17 @@ export class RentController {
   }
 
   @ApiOperation({
+    summary: '내 암벽화 대여 기록 확인하기',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get('my-rent-record')
+  async getMyRentRecord(@Req() req) {
+    const { sub } = req.user;
+    const result = await this.rentService.getMyRentRecord(sub);
+    return result;
+  }
+
+  @ApiOperation({
     summary: '신발 대여',
   })
   @UseGuards(JwtAuthGuard)

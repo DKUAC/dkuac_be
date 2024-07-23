@@ -143,6 +143,31 @@ export class RentService {
     }
   }
 
+  async getMyRentRecord(userId: number) {
+    const myRent = await this.rentRepository.findOne({
+      where: {
+        User: {
+          id: userId,
+        },
+      },
+      select: ['id', 'size'],
+    });
+
+    delete myRent.User;
+    delete myRent.id;
+
+    if (!myRent) {
+      return {
+        message: '대여 기록이 없습니다.',
+        data: null,
+      };
+    }
+    return {
+      message: '대여 기록이 존재합니다.',
+      data: myRent,
+    };
+  }
+
   async createShoe() {
     for (let i = 0; i < 12; i++) {
       const shoe = new ShoeModel();

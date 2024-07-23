@@ -157,15 +157,9 @@ export class RentService {
     delete myRent.id;
 
     if (!myRent) {
-      return {
-        message: '대여 기록이 없습니다.',
-        data: null,
-      };
+      return null;
     }
-    return {
-      message: '대여 기록이 존재합니다.',
-      data: myRent,
-    };
+    return myRent;
   }
 
   async createShoe() {

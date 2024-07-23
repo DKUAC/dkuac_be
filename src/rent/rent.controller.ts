@@ -43,7 +43,11 @@ export class RentController {
   async getMyRentRecord(@Req() req) {
     const { sub } = req.user;
     const result = await this.rentService.getMyRentRecord(sub);
-    return result;
+    return {
+      message:
+        result === null ? '대여 기록이 없습니다.' : '대여 기록이 있습니다.',
+      data: result,
+    };
   }
 
   @ApiOperation({

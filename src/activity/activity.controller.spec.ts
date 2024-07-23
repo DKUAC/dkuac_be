@@ -3,7 +3,6 @@ import { ActivityController } from './activity.controller';
 import { ActivityService } from './activity.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ExecutionContext } from '@nestjs/common';
-import { DeleteResult } from 'typeorm';
 
 describe('ActivityController', () => {
   let controller: ActivityController;

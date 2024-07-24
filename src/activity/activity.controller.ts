@@ -67,7 +67,7 @@ export class ActivityController {
   @Put(':activityId')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('images'))
-  updateActivity(
+  async updateActivity(
     @Req() req,
     @Param('activityId') id: number,
     @Body() dto: EditActivityDto,
@@ -78,7 +78,7 @@ export class ActivityController {
       const fileNames = files.map((f) => f.filename);
       return this.activityService.updateActivity(sub, id, dto, fileNames);
     }
-    return this.activityService.updateActivity(sub, id, dto);
+    return await this.activityService.updateActivity(sub, id, dto);
   }
 
   @ApiOperation({

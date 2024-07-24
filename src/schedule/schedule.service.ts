@@ -26,9 +26,9 @@ export class ScheduleService {
       throw new BadRequestException('사용자를 찾을 수 없습니다.');
     }
 
-    if (user.isStaff === false) {
-      throw new UnauthorizedException('임원진만 일정을 추가할 수 있습니다.');
-    }
+    // if (user.isStaff === false) {
+    //   throw new UnauthorizedException('임원진만 일정을 추가할 수 있습니다.');
+    // }
 
     const { title, content, date } = createScheduleDto;
     if (!title || !content || !date) {
@@ -87,9 +87,9 @@ export class ScheduleService {
       throw new BadRequestException('일정을 찾을 수 없습니다.');
     }
 
-    if (user.isStaff === false) {
-      throw new UnauthorizedException('임원진만 일정을 수정할 수 있습니다.');
-    }
+    // if (user.isStaff === false) {
+    //   throw new UnauthorizedException('임원진만 일정을 수정할 수 있습니다.');
+    // }
 
     try {
       const newSchedule = {
@@ -111,9 +111,9 @@ export class ScheduleService {
       throw new BadRequestException('사용자를 찾을 수 없습니다.');
     }
 
-    if (user.isStaff === false) {
-      throw new UnauthorizedException('임원진만 일정을 삭제할 수 있습니다.');
-    }
+    // if (user.isStaff === false) {
+    //   throw new UnauthorizedException('임원진만 일정을 삭제할 수 있습니다.');
+    // }
 
     const schedule = await this.scheduleRepository.findOne({
       where: {

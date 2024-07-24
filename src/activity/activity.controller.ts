@@ -75,13 +75,9 @@ export class ActivityController {
   ) {
     const { sub } = req.user;
     if (files) {
-      console.log('if files');
-      console.log(files);
       const fileNames = files.map((f) => f.filename);
       return this.activityService.updateActivity(sub, id, dto, fileNames);
     }
-    console.log('if no files');
-    console.log(files);
     return await this.activityService.updateActivity(sub, id, dto);
   }
 

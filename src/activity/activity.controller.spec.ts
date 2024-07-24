@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ActivityController } from './activity.controller';
 import { ActivityService } from './activity.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ExecutionContext } from '@nestjs/common';
+import { BadRequestException, ExecutionContext } from '@nestjs/common';
 import { ActivityModel } from './entities/activity.entity';
 import { DeleteResult } from 'typeorm';
 import { EditActivityDto, PostActivityDto } from './dto/activity.dto';
@@ -92,19 +92,43 @@ describe('ActivityController', () => {
   });
 
   describe('활동 등록 post 테스트', () => {
-    test('사진을 업로드하지 않은 경우', async () => {
+    test('사진을 업로드한 경우', async () => {
       // GIVEN
-      // const dto = new PostActivityDto();
-      // const mockReturnPromise = new ActivityModel();
-      // jest
-      // .spyOn(activityService, 'postActivity')
-      // .mockResolvedValue(Promise.resolve(mockReturnPromise));
+      const dto = new PostActivityDto();
+      const mockReturnPromise = new ActivityModel();
+      const mockImageFiles = [
+        { filename: 'test1.jpg' },
+        { filename: 'test2.jpg' },
+      ] as Express.Multer.File[];
+      jest
+        .spyOn(activityService, 'postActivity')
+        .mockResolvedValue(Promise.resolve(mockReturnPromise));
+
       // WHEN
-      // const result = await controller.postActivity(mockRequest, dto);
+      const result = await controller.postActivity(
+        mockRequest,
+        dto,
+        mockImageFiles,
+      );
       // THEN
-      // expect(activityService.updateActivity).toHaveBeenCalledTimes(1);
-      // expect(activityService.updateActivity).toHaveBeenCalledWith(1, 1, dto);
-      // expect(result).toEqual(mockReturnPromise);
+      expect(activityService.postActivity).toHaveBeenCalledTimes(1);
+      expect(activityService.postActivity).toHaveBeenCalledWith(1, dto, [
+        'test1.jpg',
+        'test2.jpg',
+      ]);
+      expect(result).toEqual(mockReturnPromise);
+    });
+
+    test('활동 사진을 업로드하지 않은 경우', async () => {
+      // GIVEN
+      const dto = new PostActivityDto();
+      const mockImageFiles = [] as Express.Multer.File[];
+
+      // WHEN
+      // THEN
+      await expect(
+        controller.postActivity(mockRequest, dto, mockImageFiles),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -125,9 +149,14 @@ describe('ActivityController', () => {
       expect(activityService.updateActivity).toHaveBeenCalledWith(1, 1, dto);
       expect(result).toEqual(mockReturnPromise);
     });
+
     test('사진 파일을 업로드 한 경우, files가 activityService.updateActivity의 인자에 포함됨.', async () => {
       // GIVEN
       const dto = new EditActivityDto();
+      const mockImageFiles = [
+        { filename: 'test1.jpg' },
+        { filename: 'test2.jpg' },
+      ] as Express.Multer.File[];
 
       jest
         .spyOn(activityService, 'updateActivity')
@@ -137,10 +166,13 @@ describe('ActivityController', () => {
         mockRequest,
         activityId,
         dto,
-        // files,
+        mockImageFiles,
       );
       // TEST
-      expect(activityService.updateActivity).toHaveBeenCalledWith(1, 1, dto);
+      expect(activityService.updateActivity).toHaveBeenCalledWith(1, 1, dto, [
+        'test1.jpg',
+        'test2.jpg',
+      ]);
       expect(result).toEqual(mockReturnPromise);
     });
   });

@@ -29,12 +29,7 @@ describe('RentController', () => {
             checkRent: jest.fn().mockReturnValue(mockReturn),
             rentShoe: jest.fn().mockReturnValue(mockReturn),
             returnShoe: jest.fn().mockReturnValue(mockReturn),
-            getMyRentRecord: jest.fn((userId: number) => {
-              return {
-                message: 'test message',
-                data: mockRentModelReturn,
-              };
-            }),
+            getMyRentRecord: jest.fn(),
           },
         },
       ],
@@ -58,15 +53,30 @@ describe('RentController', () => {
     expect(result).toEqual(mockReturn);
   });
 
-  test('내 암벽화 대여 기록 확인하기', async () => {
-    // GIVEN
-    // WHEN
-    const result = await controller.getMyRentRecord(mockRequest);
-    // THEN
-    expect(rentService.getMyRentRecord).toHaveBeenCalledWith(1);
-    expect(result).toEqual({
-      message: 'test message',
-      data: mockRentModelReturn,
+  describe('내 암벽화 대여 기록 확인하기 테스트', () => {
+    test('암벽화 대여하지 않은 경우', async () => {
+      // GIVEN
+      jest.spyOn(rentService, 'getMyRentRecord').mockResolvedValue(null);
+      // WHEN
+      const result = await controller.getMyRentRecord(mockRequest);
+      // THEN
+      expect(result).toEqual({
+        message: '대여 기록이 없습니다.',
+        data: null,
+      });
+    });
+
+    test('암벽화 대여한 경우', async () => {
+      // GIVEN
+      const mockReturn = new RentModel();
+      jest.spyOn(rentService, 'getMyRentRecord').mockResolvedValue(mockReturn);
+      // WHEN
+      const result = await controller.getMyRentRecord(mockRequest);
+      // THEN
+      expect(result).toEqual({
+        message: '대여 기록이 있습니다.',
+        data: mockReturn,
+      });
     });
   });
 

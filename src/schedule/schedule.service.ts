@@ -10,6 +10,7 @@ import {
   CreateScheduleDto,
   DeleteScheduleDto,
   EditScheduleDto,
+  GetDayScheduleDto,
 } from './dto/schedule.dto';
 import { UserService } from 'src/user/user.service';
 
@@ -70,6 +71,19 @@ export class ScheduleService {
       month,
       schedules,
     };
+  }
+
+  async getDaySchedule(getDayScheduleDto: GetDayScheduleDto) {
+    // 특정 날짜의 스케쥴 반환
+    const { date } = getDayScheduleDto;
+    const schedules = await this.scheduleRepository.find({
+      where: { date },
+    });
+    if (schedules.length === 0) {
+      return `${date.toLocaleDateString('ko-KR')}의 스케쥴이 없습니다.`;
+    }
+
+    return schedules;
   }
 
   async editSchedule(userId: number, editScheduleDto: EditScheduleDto) {

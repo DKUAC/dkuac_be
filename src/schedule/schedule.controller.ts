@@ -14,6 +14,7 @@ import {
   CreateScheduleDto,
   DeleteScheduleDto,
   EditScheduleDto,
+  GetDayScheduleDto,
   GetSheduleDto,
 } from './dto/schedule.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -42,6 +43,14 @@ export class ScheduleController {
   @Get()
   async getSchedule(@Body() getScheduleDto: GetSheduleDto) {
     return await this.scheduleService.getSchedule(getScheduleDto);
+  }
+
+  @ApiOperation({
+    summary: '특정 날짜 스케쥴 조회',
+  })
+  @Get('day')
+  async getDaySchedule(@Body() getDayScheduleDto: GetDayScheduleDto) {
+    return await this.scheduleService.getDaySchedule(getDayScheduleDto);
   }
 
   @ApiOperation({

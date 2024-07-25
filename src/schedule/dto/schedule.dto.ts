@@ -48,6 +48,16 @@ export class GetSheduleDto {
   month: number = new Date().getMonth() + 1;
 }
 
+export class GetDayScheduleDto {
+  @ApiProperty({
+    description: '날짜',
+    example: '2024-07-05',
+  })
+  @IsDate()
+  @IsOptional()
+  date: Date;
+}
+
 export class EditScheduleDto {
   @ApiProperty({
     description: '일정 ID',

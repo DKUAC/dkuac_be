@@ -10,7 +10,6 @@ import {
   CreateScheduleDto,
   DeleteScheduleDto,
   EditScheduleDto,
-  GetDayScheduleDto,
 } from './dto/schedule.dto';
 import { UserService } from 'src/user/user.service';
 
@@ -36,15 +35,14 @@ export class ScheduleService {
       throw new BadRequestException('일정 내용, 날짜, 장소는 필수입니다.');
     }
     try {
-      const scheduleDate = new Date(date);
-      const year = scheduleDate.getFullYear();
-      const month = scheduleDate.getMonth() + 1;
-      const day = scheduleDate.getDate();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
       const semester = month >= 3 && month <= 8 ? 1 : 2;
       const schedule = this.scheduleRepository.create({
         title,
         content,
-        date: scheduleDate,
+        date,
         year,
         month,
         day,
@@ -53,7 +51,7 @@ export class ScheduleService {
       await this.scheduleRepository.save(schedule);
       return schedule;
     } catch (error) {
-      throw new Error(
+      throw new BadRequestException(
         '일정을 추가하는 중에 문제가 발생했습니다. 다시 한번 시도해주세요.',
       );
     }
@@ -73,14 +71,13 @@ export class ScheduleService {
     };
   }
 
-  async getDaySchedule(getDayScheduleDto: GetDayScheduleDto) {
+  async getDaySchedule(date: Date) {
     // 특정 날짜의 스케쥴 반환
-    const { date } = getDayScheduleDto;
     const schedules = await this.scheduleRepository.find({
       where: { date },
     });
     if (schedules.length === 0) {
-      return `${date.toLocaleDateString('ko-KR')}의 스케쥴이 없습니다.`;
+      return `${date}의 스케쥴이 없습니다.`;
     }
 
     return schedules;
@@ -113,7 +110,7 @@ export class ScheduleService {
       await this.scheduleRepository.save(newSchedule);
       return newSchedule;
     } catch (error) {
-      throw new Error(
+      throw new BadRequestException(
         '일정을 수정하는 중에 문제가 발생했습니다. 다시 한번 시도해주세요.',
       );
     }
@@ -145,7 +142,7 @@ export class ScheduleService {
       });
       return schedule;
     } catch (error) {
-      throw new Error(
+      throw new BadRequestException(
         '일정을 삭제하는 중에 문제가 발생했습니다. 다시 한번 시도해주세요.',
       );
     }

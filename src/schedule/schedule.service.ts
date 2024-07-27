@@ -73,14 +73,14 @@ export class ScheduleService {
     };
   }
 
-  async getDaySchedule(getDayScheduleDto: GetDayScheduleDto) {
+  async getDaySchedule(date: Date) {
     // 특정 날짜의 스케쥴 반환
-    const { date } = getDayScheduleDto;
+    console.log(date);
     const schedules = await this.scheduleRepository.find({
       where: { date },
     });
     if (schedules.length === 0) {
-      return `${date.toLocaleDateString('ko-KR')}의 스케쥴이 없습니다.`;
+      return `${date}의 스케쥴이 없습니다.`;
     }
 
     return schedules;

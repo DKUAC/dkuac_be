@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Req,
@@ -42,15 +43,17 @@ export class ScheduleController {
   })
   @Get()
   async getSchedule(@Body() getScheduleDto: GetSheduleDto) {
+    console.log('스케쥴 조회');
+    console.log(getScheduleDto);
     return await this.scheduleService.getSchedule(getScheduleDto);
   }
 
   @ApiOperation({
     summary: '특정 날짜 스케쥴 조회',
   })
-  @Get('day')
-  async getDaySchedule(@Body() getDayScheduleDto: GetDayScheduleDto) {
-    return await this.scheduleService.getDaySchedule(getDayScheduleDto);
+  @Get('day/:date')
+  async getDaySchedule(@Param('date') date: Date) {
+    return await this.scheduleService.getDaySchedule(date);
   }
 
   @ApiOperation({

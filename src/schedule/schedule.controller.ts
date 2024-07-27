@@ -43,8 +43,6 @@ export class ScheduleController {
   })
   @Get()
   async getSchedule(@Body() getScheduleDto: GetSheduleDto) {
-    console.log('스케쥴 조회');
-    console.log(getScheduleDto);
     return await this.scheduleService.getSchedule(getScheduleDto);
   }
 

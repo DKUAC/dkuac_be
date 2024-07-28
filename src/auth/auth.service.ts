@@ -209,7 +209,7 @@ export class AuthService {
     const userObj = { ...user, password: hashedPassword };
     await this.userRepository.save(userObj);
 
-    this.emailService.sendNewPassword(
+    await this.emailService.sendNewPassword(
       studentNumber,
       'DKUAC 새로운 비밀번호 전송.',
       newPassword,

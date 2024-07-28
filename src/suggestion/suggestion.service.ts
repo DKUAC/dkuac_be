@@ -1,9 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SuggestionModel } from './entities/suggestion.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { SuggestionDto } from './dto/suggestion.dto';
+import { UserModel } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class SuggestionService {
@@ -17,14 +23,15 @@ export class SuggestionService {
     const user = await this.userService.findUserById(userId);
 
     if (!user) {
-      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     if (user.isStaff === false) {
       throw new UnauthorizedException('임원진만 건의사항을 볼 수 있습니다.');
     }
 
-    return this.suggestionRepository.find();
+    const suggestions = await this.suggestionRepository.find();
+    return suggestions;
   }
 
   async postSuggestion(userId: number, dto: SuggestionDto) {
@@ -32,7 +39,7 @@ export class SuggestionService {
     const user = await this.userService.findUserById(userId);
 
     if (!user) {
-      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     if (user.currentSemesterMember === false) {
@@ -52,7 +59,7 @@ export class SuggestionService {
       date,
       User: user,
     });
-
-    return this.suggestionRepository.save(suggestion);
+    const result = await this.suggestionRepository.save(suggestion);
+    return result;
   }
 }

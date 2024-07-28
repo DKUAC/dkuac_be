@@ -342,14 +342,14 @@ describe('ScheduleService', () => {
       dto.scheduleId = 1;
       const user = new UserModel();
       const schedule = new ScheduleModel();
-      const mockReturn = new DeleteResult();
+      const mockDelete = new DeleteResult();
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(schedule);
-      jest.spyOn(scheduleRepository, 'delete').mockResolvedValue(mockReturn);
+      jest.spyOn(scheduleRepository, 'delete').mockResolvedValue(mockDelete);
       // WHEN
       const result = await scheduleService.deleteSchedule(userId, dto);
       // THEN
-      expect(result).toEqual(mockReturn);
+      expect(result).toEqual(schedule);
     });
 
     test('스케쥴 삭제 시 알 수 없는 에러 발생하는 경우 BadRequestException 반환', async () => {

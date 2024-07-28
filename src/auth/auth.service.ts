@@ -80,11 +80,11 @@ export class AuthService {
       select: ['id', 'studentNumber', 'password', 'isStaff'],
     });
     if (!user) {
-      throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
+      throw new NotFoundException('학번 혹은 비밀번호를 확인해주세요.');
     }
     const ok = bcrypt.compareSync(dto.password, user?.password);
     if (!ok) {
-      throw new BadRequestException('학번 혹은 비밀번호를 확인해주세요.');
+      throw new NotFoundException('학번 혹은 비밀번호를 확인해주세요.');
     }
 
     const tokens = await this.genUserToken(user);

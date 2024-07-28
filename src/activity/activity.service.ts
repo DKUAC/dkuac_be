@@ -54,9 +54,9 @@ export class ActivityService {
         throw new NotFoundException('존재하지 않는 사용자입니다.');
       }
 
-      // if (user.isStaff === false) {
-      //   throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
-      // }
+      if (user.isStaff === false) {
+        throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
+      }
 
       const activity = new ActivityModel();
       activity.content = dto.content;
@@ -90,9 +90,9 @@ export class ActivityService {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
-    // if (user.isStaff === false) {
-    //   throw new BadRequestException('임원진만 글을 수정할 수 있습니다.');
-    // }
+    if (user.isStaff === false) {
+      throw new BadRequestException('임원진만 글을 수정할 수 있습니다.');
+    }
 
     const activity = await this.activityRepository.findOne({
       where: {

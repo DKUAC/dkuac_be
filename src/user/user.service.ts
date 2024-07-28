@@ -10,11 +10,11 @@ export class UserService {
     private readonly userRepository: Repository<UserModel>,
   ) {}
 
-    async findUserById(id: number) {
-        return await this.userRepository.findOne({
-        where: {
-            id,
-        },
-        });
-    } 
+  async findUserById(id: number) {
+    return await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
 }

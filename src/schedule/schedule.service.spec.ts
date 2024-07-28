@@ -8,7 +8,11 @@ import {
   DeleteScheduleDto,
   EditScheduleDto,
 } from './dto/schedule.dto';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserModel } from 'src/user/entities/user.entity';
 
@@ -51,7 +55,7 @@ describe('ScheduleService', () => {
   });
 
   describe('createScehdule 코드 테스트', () => {
-    test('userId에 해당하는 유저가 없으면 BadReqeustException을 던집니다.', async () => {
+    test('userId에 해당하는 유저가 없으면 NotFoundException을 던집니다.', async () => {
       // GIVEN
       const userId = 1;
       const dto = new CreateScheduleDto();
@@ -63,7 +67,7 @@ describe('ScheduleService', () => {
       // WHEN
       // THEN
       await expect(scheduleService.createSchedule(userId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
       await expect(scheduleService.createSchedule(userId, dto)).rejects.toThrow(
         '사용자를 찾을 수 없습니다.',
@@ -227,7 +231,7 @@ describe('ScheduleService', () => {
   });
 
   describe('editSchedule 테스트', () => {
-    test('입력으로 받은 userId에 해당하는 유저가 없는 경우 BadRequestException 반환', async () => {
+    test('입력으로 받은 userId에 해당하는 유저가 없는 경우 NotFoundException 반환', async () => {
       // GIVEN
       const userId = 1;
       const dto = new EditScheduleDto();
@@ -235,14 +239,14 @@ describe('ScheduleService', () => {
       // WHEN
       // THEN
       await expect(scheduleService.editSchedule(userId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
       await expect(scheduleService.editSchedule(userId, dto)).rejects.toThrow(
         '사용자를 찾을 수 없습니다.',
       );
     });
 
-    test('입력으로 받은 editScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 BadRequestException 반환', async () => {
+    test('입력으로 받은 editScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 NotFoundException 반환', async () => {
       // GIVEN
       const userId = 1;
       const dto = new EditScheduleDto();
@@ -253,7 +257,7 @@ describe('ScheduleService', () => {
 
       // THEN
       await expect(scheduleService.editSchedule(userId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
       await expect(scheduleService.editSchedule(userId, dto)).rejects.toThrow(
         '일정을 찾을 수 없습니다.',
@@ -302,7 +306,7 @@ describe('ScheduleService', () => {
   });
 
   describe('deleteSchedule 테스트', () => {
-    test('입력으로 받은 userId에 해당하는 유저가 없는 경우 BadRequestException 반환', async () => {
+    test('입력으로 받은 userId에 해당하는 유저가 없는 경우 NotFoundException 반환', async () => {
       // GIVEN
       const userId = 1;
       const dto = new DeleteScheduleDto();
@@ -310,14 +314,14 @@ describe('ScheduleService', () => {
       // WHEN
       // THEN
       await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
       await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
         '사용자를 찾을 수 없습니다.',
       );
     });
 
-    test('입력으로 받은 editScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 BadRequestException 반환', async () => {
+    test('입력으로 받은 editScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 NotFoundException 반환', async () => {
       // GIVEN
       const userId = 1;
       const dto = new DeleteScheduleDto();
@@ -328,7 +332,7 @@ describe('ScheduleService', () => {
 
       // THEN
       await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
       await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
         '일정을 찾을 수 없습니다.',

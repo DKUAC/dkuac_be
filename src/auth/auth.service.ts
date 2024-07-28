@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserModel } from 'src/user/entities/user.entity';
@@ -40,7 +41,7 @@ export class AuthService {
 
     const password = phone.slice(3);
     if (await this.findByStudentNumber(studentNumber)) {
-      throw new UnauthorizedException('이미 가입된 회원입니다.');
+      throw new BadRequestException('이미 가입된 회원입니다.');
     }
 
     const saltRounds = Number(
@@ -110,7 +111,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('존재하지 않는 유저입니다.');
+      throw new NotFoundException('존재하지 않는 유저입니다.');
     }
     const isSamePassword = await this.isSamePassword(id, newPassword);
     if (isSamePassword) {
@@ -159,7 +160,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('존재하지 않는 유저입니다.');
+      throw new NotFoundException('존재하지 않는 유저입니다.');
     }
 
     if (user.isStaff === true) {
@@ -180,7 +181,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('존재하지 않는 유저입니다.');
+      throw new NotFoundException('존재하지 않는 유저입니다.');
     }
 
     await this.createVerificationCodeAndSend(studentNumber, '비밀번호 찾기');
@@ -249,7 +250,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('존재하지 않는 유저입니다.');
+      throw new NotFoundException('존재하지 않는 유저입니다.');
     }
     const result = bcrypt.compareSync(password, user?.password);
 

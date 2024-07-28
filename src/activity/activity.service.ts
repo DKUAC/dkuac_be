@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
@@ -35,7 +40,7 @@ export class ActivityService {
     });
 
     if (!activity) {
-      throw new BadRequestException('존재하지 않는 글입니다.');
+      throw new NotFoundException('존재하지 않는 글입니다.');
     }
 
     return activity;
@@ -46,7 +51,7 @@ export class ActivityService {
       const user = await this.userService.findUserById(userId);
 
       if (!user) {
-        throw new BadRequestException('존재하지 않는 사용자입니다.');
+        throw new NotFoundException('존재하지 않는 사용자입니다.');
       }
 
       // if (user.isStaff === false) {
@@ -82,7 +87,7 @@ export class ActivityService {
 
     const user = await this.userService.findUserById(userId);
     if (!user) {
-      throw new BadRequestException('존재하지 않는 사용자입니다.');
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
     // if (user.isStaff === false) {
@@ -96,7 +101,7 @@ export class ActivityService {
     });
 
     if (!activity) {
-      throw new BadRequestException('존재하지 않는 글입니다.');
+      throw new NotFoundException('존재하지 않는 글입니다.');
     }
 
     try {
@@ -129,11 +134,11 @@ export class ActivityService {
   async deleteActivity(userId: number, activityId: number) {
     const user = await this.userService.findUserById(userId);
     if (!user) {
-      throw new BadRequestException('존재하지 않는 사용자입니다.');
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
     if (user.isStaff === false) {
-      throw new BadRequestException('임원진만 글을 삭제할 수 있습니다.');
+      throw new UnauthorizedException('임원진만 글을 삭제할 수 있습니다.');
     }
 
     const activity = await this.activityRepository.findOne({
@@ -143,7 +148,7 @@ export class ActivityService {
     });
 
     if (!activity) {
-      throw new BadRequestException('존재하지 않는 글입니다.');
+      throw new NotFoundException('존재하지 않는 글입니다.');
     }
 
     return this.activityRepository.delete({
@@ -160,7 +165,7 @@ export class ActivityService {
     });
 
     if (!activity) {
-      throw new BadRequestException('존재하지 않는 글입니다.');
+      throw new NotFoundException('존재하지 않는 글입니다.');
     }
 
     return activity.Comments;

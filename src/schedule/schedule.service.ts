@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,7 +24,7 @@ export class ScheduleService {
   async createSchedule(userId: number, createScheduleDto: CreateScheduleDto) {
     const user = await this.userService.findUserById(userId);
     if (!user) {
-      throw new BadRequestException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // if (user.isStaff === false) {
@@ -86,7 +87,7 @@ export class ScheduleService {
   async editSchedule(userId: number, editScheduleDto: EditScheduleDto) {
     const user = await this.userService.findUserById(userId);
     if (!user) {
-      throw new BadRequestException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
     const schedule = await this.scheduleRepository.findOne({
       where: {
@@ -95,7 +96,7 @@ export class ScheduleService {
     });
 
     if (!schedule) {
-      throw new BadRequestException('일정을 찾을 수 없습니다.');
+      throw new NotFoundException('일정을 찾을 수 없습니다.');
     }
 
     // if (user.isStaff === false) {
@@ -119,7 +120,7 @@ export class ScheduleService {
   async deleteSchedule(userId: number, deleteScheduleDto: DeleteScheduleDto) {
     const user = await this.userService.findUserById(userId);
     if (!user) {
-      throw new BadRequestException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // if (user.isStaff === false) {
@@ -133,7 +134,7 @@ export class ScheduleService {
     });
 
     if (!schedule) {
-      throw new BadRequestException('일정을 찾을 수 없습니다.');
+      throw new NotFoundException('일정을 찾을 수 없습니다.');
     }
 
     try {

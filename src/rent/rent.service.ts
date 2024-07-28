@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RentModel } from './entities/rent.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
@@ -40,7 +45,7 @@ export class RentService {
     try {
       const user = await this.userService.findUserById(userId);
       if (!user) {
-        throw new BadRequestException('회원 정보를 찾을 수 없습니다.');
+        throw new NotFoundException('회원 정보를 찾을 수 없습니다.');
       }
 
       // if (user.isPaid === false || user.currentSemesterMember === false) {
@@ -68,7 +73,7 @@ export class RentService {
       }
 
       if (!shoe || shoe.rentable === 0) {
-        throw new BadRequestException('해당 사이즈의 신발이 없습니다.');
+        throw new NotFoundException('해당 사이즈의 신발이 없습니다.');
       }
 
       shoe.rentable -= 1;
@@ -97,7 +102,7 @@ export class RentService {
     try {
       const user = await this.userService.findUserById(userId);
       if (!user) {
-        throw new BadRequestException('회원 정보를 찾을 수 없습니다.');
+        throw new UnauthorizedException('회원 정보를 찾을 수 없습니다.');
       }
 
       const rent = await this.rentRepository.findOne({
@@ -110,7 +115,7 @@ export class RentService {
       });
 
       if (!rent) {
-        throw new BadRequestException('해당 신발을 대여한 기록이 없습니다.');
+        throw new NotFoundException('해당 신발을 대여한 기록이 없습니다.');
       }
 
       const shoe = await this.shoeRepository.findOne({
@@ -120,7 +125,7 @@ export class RentService {
       });
 
       if (!shoe) {
-        throw new BadRequestException('해당 사이즈의 신발이 없습니다.');
+        throw new NotFoundException('해당 사이즈의 신발이 없습니다.');
       }
 
       shoe.rentable += 1;

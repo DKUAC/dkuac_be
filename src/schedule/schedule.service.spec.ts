@@ -73,7 +73,22 @@ describe('ScheduleService', () => {
         '사용자를 찾을 수 없습니다.',
       );
     });
+    test('스케쥴 생성 시 유저가 staff가 아닌 경우 UnauthorizedException을 던집니다.', async () => {
+      // GIVEN
+      const userId = 1;
+      const dto = new CreateScheduleDto();
+      dto.content = 'test content';
+      dto.title = 'test title';
+      const mockUser = new UserModel();
+      jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
+      mockUser.isStaff = false;
 
+      // WHEN
+      // THEN
+      await expect(scheduleService.createSchedule(userId, dto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
     test('스케쥴 생성 dto에 title, content, date 중 하나라도 없으면 BadReqeustException을 던집니다. - title이 없는 경우', async () => {
       // GIVEN
       const userId = 1;
@@ -82,6 +97,7 @@ describe('ScheduleService', () => {
       dto.date = new Date();
       const mockSchedule = new ScheduleModel();
       const mockUser = new UserModel();
+      mockUser.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
       jest.spyOn(scheduleRepository, 'create').mockReturnValue(mockSchedule);
       jest.spyOn(scheduleRepository, 'save').mockResolvedValue(mockSchedule);
@@ -103,6 +119,7 @@ describe('ScheduleService', () => {
       dto.date = new Date();
       const mockSchedule = new ScheduleModel();
       const mockUser = new UserModel();
+      mockUser.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
       jest.spyOn(scheduleRepository, 'create').mockReturnValue(mockSchedule);
       jest.spyOn(scheduleRepository, 'save').mockResolvedValue(mockSchedule);
@@ -124,6 +141,7 @@ describe('ScheduleService', () => {
       dto.content = 'test content';
       const mockSchedule = new ScheduleModel();
       const mockUser = new UserModel();
+      mockUser.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
       jest.spyOn(scheduleRepository, 'create').mockReturnValue(mockSchedule);
       jest.spyOn(scheduleRepository, 'save').mockResolvedValue(mockSchedule);
@@ -146,6 +164,7 @@ describe('ScheduleService', () => {
       dto.date = new Date();
       const mockSchedule = new ScheduleModel();
       const mockUser = new UserModel();
+      mockUser.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
       jest.spyOn(scheduleRepository, 'create').mockReturnValue(mockSchedule);
       jest
@@ -172,6 +191,7 @@ describe('ScheduleService', () => {
       dto.date = new Date(2024, 0, 7);
       const mockSchedule = new ScheduleModel();
       const mockUser = new UserModel();
+      mockUser.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
       jest.spyOn(scheduleRepository, 'create').mockReturnValue(mockSchedule);
       jest.spyOn(scheduleRepository, 'save').mockResolvedValue(mockSchedule);
@@ -246,11 +266,28 @@ describe('ScheduleService', () => {
       );
     });
 
+    test('유저가 임원진이 아닌 경우 UnauthorziedException 반환', async () => {
+      // GIVEN
+      const userId = 1;
+      const dto = new EditScheduleDto();
+      const user = new UserModel();
+      jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
+      // WHEN
+      // THEN
+      await expect(scheduleService.editSchedule(userId, dto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(scheduleService.editSchedule(userId, dto)).rejects.toThrow(
+        '임원진만 일정을 수정할 수 있습니다.',
+      );
+    });
+
     test('입력으로 받은 editScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 NotFoundException 반환', async () => {
       // GIVEN
       const userId = 1;
       const dto = new EditScheduleDto();
       const user = new UserModel();
+      user.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(undefined);
       // WHEN
@@ -274,6 +311,7 @@ describe('ScheduleService', () => {
         ...schedule,
         ...dto,
       };
+      user.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(schedule);
       jest.spyOn(scheduleRepository, 'save').mockResolvedValue(mockReturn);
@@ -289,6 +327,7 @@ describe('ScheduleService', () => {
       const dto = new EditScheduleDto();
       const user = new UserModel();
       const schedule = new ScheduleModel();
+      user.isStaff = true;
 
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(schedule);
@@ -321,15 +360,31 @@ describe('ScheduleService', () => {
       );
     });
 
-    test('입력으로 받은 editScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 NotFoundException 반환', async () => {
+    test('유저가 임원진이 아닌 경우 UnauthorziedException 반환', async () => {
       // GIVEN
       const userId = 1;
       const dto = new DeleteScheduleDto();
       const user = new UserModel();
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
+      // WHEN
+      // THEN
+      await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
+        '임원진만 일정을 삭제할 수 있습니다.',
+      );
+    });
+
+    test('입력으로 받은 deleteScheduleDto 속 scheduleId에 해당하는 스케쥴이 없는 경우 NotFoundException 반환', async () => {
+      // GIVEN
+      const userId = 1;
+      const dto = new DeleteScheduleDto();
+      const user = new UserModel();
+      user.isStaff = true;
+      jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(undefined);
       // WHEN
-
       // THEN
       await expect(scheduleService.deleteSchedule(userId, dto)).rejects.toThrow(
         NotFoundException,
@@ -347,6 +402,7 @@ describe('ScheduleService', () => {
       const user = new UserModel();
       const schedule = new ScheduleModel();
       const mockDelete = new DeleteResult();
+      user.isStaff = true;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(schedule);
       jest.spyOn(scheduleRepository, 'delete').mockResolvedValue(mockDelete);
@@ -362,6 +418,7 @@ describe('ScheduleService', () => {
       const dto = new DeleteScheduleDto();
       dto.scheduleId = 1;
       const user = new UserModel();
+      user.isStaff = true;
       const schedule = new ScheduleModel();
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(scheduleRepository, 'findOne').mockResolvedValue(schedule);

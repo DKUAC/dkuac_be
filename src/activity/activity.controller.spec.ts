@@ -43,7 +43,7 @@ describe('ActivityController', () => {
         {
           provide: ActivityService,
           useValue: {
-            getActivityBySemseter: jest.fn(() => Promise.resolve()),
+            getActivityByYearAndSemseter: jest.fn(() => Promise.resolve()),
             postActivity: jest.fn(
               (userId: number, dto: PostActivityDto, images?: string[]) =>
                 Promise.resolve(),
@@ -78,16 +78,23 @@ describe('ActivityController', () => {
 
   test('활동게시판에 들어갔을 때 Get 요청 테스트', async () => {
     // GIVEN
+    const year = 2024;
+    const semester = 1;
     const activity1 = new ActivityModel();
     const activity2 = new ActivityModel();
 
     jest
-      .spyOn(activityService, 'getActivityBySemseter')
+      .spyOn(activityService, 'getActivityByYearAndSemseter')
       .mockResolvedValue(Promise.resolve([activity1, activity2]));
     // WHEN
-    const result = await controller.getActivityBySemseter();
+    const result = await controller.getActivityByYearAndSemseter(
+      year,
+      semester,
+    );
     // THEN
-    expect(activityService.getActivityBySemseter).toHaveBeenCalledTimes(1);
+    expect(activityService.getActivityByYearAndSemseter).toHaveBeenCalledTimes(
+      1,
+    );
     expect(result).toEqual([activity1, activity2]);
   });
 
@@ -128,7 +135,7 @@ describe('ActivityController', () => {
       // THEN
       await expect(
         controller.postActivity(mockRequest, dto, mockImageFiles),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow('활동 사진을 업로드해주세요');
     });
   });
 

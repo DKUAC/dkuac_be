@@ -29,7 +29,7 @@ export class ActivityController {
     summary: '가장 최근 학기의 활동을 가져오는 API',
   })
   @Get(':year/:semester')
-  getActivityBySemseter(
+  getActivityByYearAndSemseter(
     @Param('year') year: number,
     @Param('semester') semester: number,
   ) {

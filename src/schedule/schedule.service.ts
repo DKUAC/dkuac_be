@@ -95,12 +95,12 @@ export class ScheduleService {
       },
     });
 
-    if (!schedule) {
-      throw new NotFoundException('일정을 찾을 수 없습니다.');
-    }
-
     if (user.isStaff === false) {
       throw new UnauthorizedException('임원진만 일정을 수정할 수 있습니다.');
+    }
+
+    if (!schedule) {
+      throw new NotFoundException('일정을 찾을 수 없습니다.');
     }
 
     try {

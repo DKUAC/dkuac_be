@@ -20,7 +20,7 @@ export class ActivityModel extends BaseModel {
 
   @IsIn([1, 2])
   @Column()
-  semester: 1 | 2;
+  semester: 1 | 2 | number;
 
   @IsDate()
   @Column()

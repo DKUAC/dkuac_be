@@ -18,7 +18,7 @@ export default class UsersSeeder implements Seeder {
       isStaff: true,
       currentSemesterMember: true,
       isPaid: true,
-    };
+    }; // 집행부(권한 모두 있음)
 
     const normal_paid_user = {
       name: 'kim',
@@ -30,7 +30,7 @@ export default class UsersSeeder implements Seeder {
       isStaff: false,
       currentSemesterMember: true,
       isPaid: true,
-    };
+    }; // 이번 학기 회원(회비 지불)
 
     const normal_not_paid_user = {
       name: 'choi',
@@ -42,7 +42,7 @@ export default class UsersSeeder implements Seeder {
       isStaff: false,
       currentSemesterMember: true,
       isPaid: false,
-    };
+    }; // 이번 학기 회원(회비 미지불)
 
     const normal_not_this_semester_user = {
       name: 'park',
@@ -54,7 +54,7 @@ export default class UsersSeeder implements Seeder {
       isStaff: false,
       currentSemesterMember: false,
       isPaid: false,
-    };
+    }; // 일반 회원가입(회원 아닌 사람)
 
     await repository.insert([
       staff_paid_user,

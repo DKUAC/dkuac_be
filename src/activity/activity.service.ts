@@ -19,16 +19,39 @@ export class ActivityService {
     private readonly userService: UserService,
   ) {}
 
-  async getActivityBySemseter() {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const semester = month >= 3 && month <= 8 ? 1 : 2;
+  async getActivityByYearAndSemseter(year?: number, semester?: number) {
+    if (year && semester) {
+      if (semester !== 1 && semester !== 2) {
+        throw new BadRequestException('학기는 1 또는 2만 가능합니다.');
+      }
+      const activities = await this.activityRepository.find({
+        where: {
+          year,
+          semester,
+        },
+      });
+      return activities;
+    } else if (year && !semester) {
+      const activities = await this.activityRepository.find({
+        where: {
+          year,
+        },
+      });
+      return activities;
+    } else if (!year && !semester) {
+      const today = new Date();
+      const month = today.getMonth() + 1;
+      const semester = month >= 3 && month <= 8 ? 1 : 2;
 
-    return await this.activityRepository.find({
-      where: {
-        semester,
-      },
-    });
+      const activities = await this.activityRepository.find({
+        where: {
+          semester,
+        },
+      });
+      return activities;
+    } else {
+      throw new BadRequestException('학년도를 입력해주세요.');
+    }
   }
 
   async getActivityById(id: number) {
@@ -62,7 +85,7 @@ export class ActivityService {
       activity.content = dto.content;
       activity.date = dto.date;
       activity.semester =
-        dto.date.getMonth() >= 3 && dto.date.getMonth() <= 8 ? 1 : 2;
+        dto.date.getMonth() + 1 >= 3 && dto.date.getMonth() + 1 <= 8 ? 1 : 2;
       activity.year = dto.date.getFullYear();
       activity.images = JSON.stringify(images);
       activity.Author = user;

@@ -8,7 +8,7 @@ const configService = new ConfigService();
 
 export default new DataSource({
   type: 'mysql',
-  host: configService.get('DOCKER_MYSQL_HOST'),
+  host: configService.get('SEED_MYSQL_HOST'),
   port: configService.get<number>('DOCKER_MYSQL_PORT'),
   database: configService.get('DOCKER_MYSQL_DATABASE'),
   username: configService.get('DOCKER_MYSQL_USERNAME'),

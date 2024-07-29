@@ -15,7 +15,7 @@ services:
     ports:
       - '3307:3307'
     environment:
-      - MYSQL_ROOT_PASSWORD=root_password_123
+      - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=dkuac
       - MYSQL_USER=user
       - MYSQL_PASSWORD=user123

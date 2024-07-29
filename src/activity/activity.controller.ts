@@ -28,9 +28,12 @@ export class ActivityController {
   @ApiOperation({
     summary: '가장 최근 학기의 활동을 가져오는 API',
   })
-  @Get()
-  getActivityBySemseter() {
-    return this.activityService.getActivityBySemseter();
+  @Get(':year/:semester')
+  getActivityBySemseter(
+    @Param('year') year: number,
+    @Param('semester') semester: number,
+  ) {
+    return this.activityService.getActivityByYearAndSemseter(year, semester);
   }
 
   @ApiOperation({

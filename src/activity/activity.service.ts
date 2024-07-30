@@ -22,7 +22,7 @@ export class ActivityService {
   async getActivityByYearAndSemseter(year?: number, semester?: number) {
     if (year && semester) {
       if (semester !== 1 && semester !== 2) {
-        throw new BadRequestException('학기는 1 또는 2만 가능합니다.');
+        throw new BadRequestException('semester는 1 또는 2만 가능합니다.');
       }
       const activities = await this.activityRepository.find({
         where: {
@@ -40,17 +40,17 @@ export class ActivityService {
       return activities;
     } else if (!year && !semester) {
       const today = new Date();
+      const year = today.getFullYear();
       const month = today.getMonth() + 1;
       const semester = month >= 3 && month <= 8 ? 1 : 2;
 
       const activities = await this.activityRepository.find({
         where: {
+          year,
           semester,
         },
       });
       return activities;
-    } else {
-      throw new BadRequestException('학년도를 입력해주세요.');
     }
   }
 
@@ -70,25 +70,26 @@ export class ActivityService {
   }
 
   async postActivity(userId: number, dto: PostActivityDto, images: string[]) {
+    const user = await this.userService.findUserById(userId);
+
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
+    }
+
+    if (user.isStaff === false) {
+      throw new UnauthorizedException('임원진만 글을 작성할 수 있습니다.');
+    }
+
     try {
-      const user = await this.userService.findUserById(userId);
-
-      if (!user) {
-        throw new NotFoundException('존재하지 않는 사용자입니다.');
-      }
-
-      if (user.isStaff === false) {
-        throw new BadRequestException('임원진만 글을 작성할 수 있습니다.');
-      }
-
-      const activity = new ActivityModel();
-      activity.content = dto.content;
-      activity.date = dto.date;
-      activity.semester =
-        dto.date.getMonth() + 1 >= 3 && dto.date.getMonth() + 1 <= 8 ? 1 : 2;
-      activity.year = dto.date.getFullYear();
-      activity.images = JSON.stringify(images);
-      activity.Author = user;
+      const activity = this.activityRepository.create({
+        content: dto.content,
+        date: dto.date,
+        semester:
+          dto.date.getMonth() + 1 >= 3 && dto.date.getMonth() + 1 <= 8 ? 1 : 2,
+        year: dto.date.getFullYear(),
+        images: JSON.stringify(images),
+        Author: user,
+      });
 
       await this.activityRepository.save(activity);
       return activity;
@@ -103,18 +104,20 @@ export class ActivityService {
     dto: EditActivityDto,
     images?: string[],
   ) {
-    const { content, date } = dto;
-    if (!content && !date && !images) {
-      throw new BadRequestException('수정할 내용이 없습니다.');
-    }
-
     const user = await this.userService.findUserById(userId);
+
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
     if (user.isStaff === false) {
-      throw new BadRequestException('임원진만 글을 수정할 수 있습니다.');
+      throw new UnauthorizedException('임원진만 글을 수정할 수 있습니다.');
+    }
+
+    const { content, date } = dto;
+
+    if (!content && !date && !images) {
+      throw new BadRequestException('수정할 내용이 없습니다.');
     }
 
     const activity = await this.activityRepository.findOne({
@@ -132,7 +135,7 @@ export class ActivityService {
       if (date) {
         activity.date = dto.date;
         activity.semester =
-          dto.date.getMonth() >= 3 && dto.date.getMonth() <= 8 ? 1 : 2;
+          dto.date.getMonth() + 1 >= 3 && dto.date.getMonth() + 1 <= 8 ? 1 : 2;
         activity.year = dto.date.getFullYear();
       }
       if (images.length !== 0) {
@@ -145,10 +148,10 @@ export class ActivityService {
         activity.images = activity.images;
       }
 
-      await this.activityRepository.save({
+      const updatedActivity = await this.activityRepository.save({
         ...activity,
       });
-      return activity;
+      return updatedActivity;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -174,9 +177,11 @@ export class ActivityService {
       throw new NotFoundException('존재하지 않는 글입니다.');
     }
 
-    return this.activityRepository.delete({
+    const deletedActivity = await this.activityRepository.delete({
       id: activityId,
     });
+
+    return deletedActivity;
   }
 
   async getActivityComments(activityId: number) {

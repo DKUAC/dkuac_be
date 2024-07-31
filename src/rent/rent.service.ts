@@ -42,40 +42,41 @@ export class RentService {
 
     await QueryRunner.connect();
     await QueryRunner.startTransaction();
+
+    const user = await this.userService.findUserById(userId);
+    if (!user) {
+      throw new NotFoundException('회원 정보를 찾을 수 없습니다.');
+    }
+
+    if (user.isPaid === false || user.currentSemesterMember === false) {
+      throw new BadRequestException(
+        '회원 가입 또는 회비 납부 후 이용 가능합니다.',
+      );
+    }
+
+    const shoe = await this.shoeRepository.findOne({
+      where: {
+        size,
+      },
+    });
+
+    const dupRentCheck = await this.rentRepository.findOne({
+      where: {
+        User: {
+          id: userId,
+        },
+      },
+    });
+
+    if (dupRentCheck) {
+      throw new BadRequestException('1인당 1개의 신발만 대여 가능합니다.');
+    }
+
+    if (!shoe || shoe.rentable === 0) {
+      throw new NotFoundException('해당 사이즈의 신발이 없습니다.');
+    }
+
     try {
-      const user = await this.userService.findUserById(userId);
-      if (!user) {
-        throw new NotFoundException('회원 정보를 찾을 수 없습니다.');
-      }
-
-      if (user.isPaid === false || user.currentSemesterMember === false) {
-        throw new BadRequestException(
-          '회원 가입 또는 회비 납부 후 이용 가능합니다.',
-        );
-      }
-
-      const shoe = await this.shoeRepository.findOne({
-        where: {
-          size,
-        },
-      });
-
-      const dupRentCheck = await this.rentRepository.findOne({
-        where: {
-          User: {
-            id: userId,
-          },
-        },
-      });
-
-      if (dupRentCheck) {
-        throw new BadRequestException('1인당 1개의 신발만 대여 가능합니다.');
-      }
-
-      if (!shoe || shoe.rentable === 0) {
-        throw new NotFoundException('해당 사이즈의 신발이 없습니다.');
-      }
-
       shoe.rentable -= 1;
       const rent = new RentModel();
       rent.size = size;

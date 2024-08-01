@@ -181,6 +181,7 @@ describe('ActivityService', () => {
         activityService.postActivity(userId, dto, images),
       ).rejects.toThrow('존재하지 않는 사용자입니다.');
     });
+
     test('유저가 임원진이 아닌 경우 UnauthorizedException 에러 발생', async () => {
       // GIVEN
       const userId = 1;
@@ -199,6 +200,24 @@ describe('ActivityService', () => {
       ).rejects.toThrow('임원진만 글을 작성할 수 있습니다.');
     });
 
+    test('dto에 title, content, date 중 하나라도 없는 경우 BadRequestException 반환', async () => {
+      // GIVEN
+      const userId = 1;
+      const dto = new PostActivityDto();
+      const images = [];
+      const user = new UserModel();
+      user.isStaff = true;
+      jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
+      // WHEN
+      // THEN
+      await expect(
+        activityService.postActivity(userId, dto, images),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        activityService.postActivity(userId, dto, images),
+      ).rejects.toThrow('활동 제목, 내용, 날짜를 입력해주세요.');
+    });
+
     test('알 수 없는 에러 발생시 BadRequestException 발생', async () => {
       // GIVEN
       const userId = 1;
@@ -206,9 +225,11 @@ describe('ActivityService', () => {
       const images = [];
       const user = new UserModel();
       user.isStaff = true;
+      dto.title = 'title';
       dto.content = 'content';
       dto.date = new Date(2024, 0, 1);
       const activity = new ActivityModel();
+      activity.title = dto.title;
       activity.content = dto.content;
       activity.date = dto.date;
       activity.semester =
@@ -234,9 +255,11 @@ describe('ActivityService', () => {
       const images = [];
       const user = new UserModel();
       user.isStaff = true;
+      dto.title = 'title';
       dto.content = 'content';
       dto.date = new Date(2024, 0, 1);
       const activity = new ActivityModel();
+      activity.title = dto.title;
       activity.content = dto.content;
       activity.date = dto.date;
       activity.semester =
@@ -292,7 +315,7 @@ describe('ActivityService', () => {
       ).rejects.toThrow('임원진만 글을 수정할 수 있습니다.');
     });
 
-    test('content, date, images가 없는 경우, BadRequestException 반환', async () => {
+    test('title, content, date, images가 없는 경우, BadRequestException 반환', async () => {
       // GIVEN
       const userId = 1;
       const activityId = 1;
@@ -395,13 +418,15 @@ describe('ActivityService', () => {
       const user = new UserModel();
       const images = [];
       user.isStaff = true;
-      dto.content = 'test content';
+      dto.title = 'new title';
+      dto.content = 'new content';
       dto.date = new Date(2024, 0, 1);
       const activity = new ActivityModel();
 
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(activityRepository, 'findOne').mockResolvedValue(activity);
 
+      activity.title = dto.title;
       activity.date = dto.date;
       activity.content = dto.content;
       activity.images = JSON.stringify(['originImg1.jpg', 'originImg2.jpg']);

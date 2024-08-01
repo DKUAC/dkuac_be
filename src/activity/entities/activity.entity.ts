@@ -10,7 +10,9 @@ import { CommentModel } from '../comment/entities/comment.entity';
   name: 'activities',
 })
 export class ActivityModel extends BaseModel {
-  @IsString()
+  @Column()
+  title: string;
+
   @Column()
   content: string;
 

@@ -71,7 +71,7 @@ export class ActivityService {
 
   async postActivity(userId: number, dto: PostActivityDto, images: string[]) {
     const user = await this.userService.findUserById(userId);
-
+    const { title, content, date } = dto;
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
@@ -80,13 +80,17 @@ export class ActivityService {
       throw new UnauthorizedException('임원진만 글을 작성할 수 있습니다.');
     }
 
+    if (!title || !content || !date) {
+      throw new BadRequestException('활동 제목, 내용, 날짜를 입력해주세요.');
+    }
+
     try {
       const activity = this.activityRepository.create({
-        content: dto.content,
-        date: dto.date,
-        semester:
-          dto.date.getMonth() + 1 >= 3 && dto.date.getMonth() + 1 <= 8 ? 1 : 2,
-        year: dto.date.getFullYear(),
+        title,
+        content,
+        date,
+        semester: date.getMonth() + 1 >= 3 && date.getMonth() + 1 <= 8 ? 1 : 2,
+        year: date.getFullYear(),
         images: JSON.stringify(images),
         Author: user,
       });
@@ -114,9 +118,9 @@ export class ActivityService {
       throw new UnauthorizedException('임원진만 글을 수정할 수 있습니다.');
     }
 
-    const { content, date } = dto;
+    const { title, content, date } = dto;
 
-    if (!content && !date && !images) {
+    if (!title && !content && !date && !images) {
       throw new BadRequestException('수정할 내용이 없습니다.');
     }
 
@@ -131,6 +135,7 @@ export class ActivityService {
     }
 
     try {
+      activity.title = title ? title : activity.title;
       activity.content = content ? content : activity.content;
       if (date) {
         activity.date = dto.date;

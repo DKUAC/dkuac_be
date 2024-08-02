@@ -1,3 +1,4 @@
+import { ActivityModel } from 'src/activity/entities/activity.entity';
 import { UserModel } from 'src/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
@@ -66,5 +67,13 @@ export default class UsersSeeder implements Seeder {
     const userFactory = factoryManager.get(UserModel);
 
     await userFactory.saveMany(3000);
+
+    const activityFactory = factoryManager.get(ActivityModel);
+
+    for (let i = 0; i < 10; i++) {
+      const activity = await activityFactory.make();
+      activity.Author = await repository.findOne({ where: { isStaff: true } });
+      await activityFactory.save(activity);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { IsIn, IsString } from 'class-validator';
+import { IsIn } from 'class-validator';
 import { BaseModel } from 'src/common/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 

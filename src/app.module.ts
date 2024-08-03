@@ -16,7 +16,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
 import { SuggestionModule } from './suggestion/suggestion.module';
 import { ScheduleModule } from './schedule/schedule.module';
-import { LogInterceptor } from './common/interceptor/log.interceptor';
+import { LogInterceptor } from './common/interceptors/log.interceptor';
 import { CommentModule } from './activity/comment/comment.module';
 
 const configService = new ConfigService();

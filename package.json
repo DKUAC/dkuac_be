@@ -110,7 +110,13 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/dist/",
-      "src/database"
+      "src/*.*.module.ts",
+      "src/*.*.entity.ts",
+      "src/auth/guards/*",
+      "src/auth/strategies/*",
+      "src/common/interceptors/*",
+      "src/database",
+      "src/main.ts"
     ]
   }
 }

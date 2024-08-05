@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { RentModule } from './rent/rent.module';
@@ -18,7 +18,7 @@ import { SuggestionModule } from './suggestion/suggestion.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { LogInterceptor } from './common/interceptors/log.interceptor';
 import { CommentModule } from './activity/comment/comment.module';
-
+import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 const configService = new ConfigService();
 
 @Module({
@@ -68,6 +68,10 @@ const configService = new ConfigService();
     {
       provide: APP_INTERCEPTOR,
       useClass: LogInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
     },
   ],
 })

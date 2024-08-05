@@ -1,5 +1,3 @@
-// Import with `const Sentry = require("@sentry/nestjs");` if you are using CJS
-import 'dotenv/config';
 import { ConfigService } from '@nestjs/config';
 import * as Sentry from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';

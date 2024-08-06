@@ -6,11 +6,14 @@ import {
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RentService } from './rent.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RentShoeDto } from './dto/rent.dto';
+import { RentInterceptor } from './interceptor/rent.interceptor';
+import { ReturnInterceptor } from './interceptor/return.interceptor';
 
 @ApiTags('rent')
 @Controller('rent')
@@ -54,6 +57,7 @@ export class RentController {
     summary: '신발 대여',
   })
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(RentInterceptor)
   @Post()
   async rentShoe(@Req() req, @Body() dto: RentShoeDto) {
     const { sub } = req.user;
@@ -67,6 +71,7 @@ export class RentController {
     summary: '신발 반납',
   })
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ReturnInterceptor)
   @Post('return')
   async returnShoe(@Req() req, @Body() dto: RentShoeDto) {
     const { sub } = req.user;

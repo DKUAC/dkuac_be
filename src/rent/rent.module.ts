@@ -5,9 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RentModel } from './entities/rent.entity';
 import { ShoeModel } from './entities/shoe.entity';
 import { UserModule } from 'src/user/user.module';
+import { RentLogModel } from './entities/rent-log.entity';
+import { ReturnLogModel } from './entities/return-log.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RentModel, ShoeModel]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      RentModel,
+      ShoeModel,
+      RentLogModel,
+      ReturnLogModel,
+    ]),
+    UserModule,
+  ],
   controllers: [RentController],
   providers: [RentService],
 })

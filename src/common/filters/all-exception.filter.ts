@@ -5,18 +5,25 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
+import { IncomingWebhook } from '@slack/webhook';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly configService: ConfigService,
+  ) {}
 
-  catch(exception: unknown, host: ArgumentsHost): void {
+  async catch(exception: unknown, host: ArgumentsHost) {
     Sentry.captureException(exception);
     // In certain situations `httpAdapter` might not be available in the
     // constructor method, thus we should resolve it here.
-    console.log('in exception filter');
+
+    const url = this.configService.get('SLACK_WEBHOOK_URL');
+    const webhook = new IncomingWebhook(url);
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
@@ -37,6 +44,29 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
+
+    await webhook.send({
+      attachments: [
+        {
+          color: 'danger',
+          text: 'DKUAC 에러 발생',
+          fields: [
+            {
+              title:
+                exception instanceof Error
+                  ? exception.name
+                  : 'Internal Server Error',
+              value:
+                exception instanceof Error
+                  ? exception.message
+                  : 'Internal server error',
+              short: false,
+            },
+          ],
+          ts: Math.floor(new Date().getTime() / 1000).toString(),
+        },
+      ],
+    });
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }

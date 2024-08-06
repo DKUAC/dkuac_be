@@ -22,7 +22,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     // In certain situations `httpAdapter` might not be available in the
     // constructor method, thus we should resolve it here.
 
-    const url = this.configService.get('SLACK_WEBHOOK_URL');
+    const url = this.configService.get('SLACK_ERROR_WEBHOOK_URL');
     const webhook = new IncomingWebhook(url);
     const { httpAdapter } = this.httpAdapterHost;
 

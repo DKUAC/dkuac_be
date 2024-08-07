@@ -19,8 +19,6 @@ export class RentService {
     private readonly rentRepository: Repository<RentModel>,
     @InjectRepository(RentLogModel)
     private readonly rentLogRepository: Repository<RentLogModel>,
-    @InjectRepository(ReturnLogModel)
-    private readonly returnLogRepository: Repository<ReturnLogModel>,
     @InjectRepository(ShoeModel)
     private readonly shoeRepository: Repository<ShoeModel>,
     private readonly userService: UserService,

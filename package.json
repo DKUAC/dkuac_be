@@ -120,8 +120,12 @@
       "src/auth/guards/*",
       "src/auth/strategies/*",
       "src/common/interceptors/*",
+      "src/common/filters/*",
+      "src/configs",
+      "src/rent/interceptor/*",
       "src/database",
-      "src/main.ts"
+      "src/main.ts",
+      "src/instrument.ts"
     ]
   }
 }

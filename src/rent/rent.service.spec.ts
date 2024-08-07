@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RentService } from './rent.service';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { RentModel } from './entities/rent.entity';
 import { ShoeModel } from './entities/shoe.entity';
 import { UserService } from 'src/user/user.service';
@@ -11,11 +11,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { RentLogModel } from './entities/rent-log.entity';
+import { ReturnLogModel } from './entities/return-log.entity';
 
 describe('RentService', () => {
   let rentService: RentService;
   let rentRepository: Repository<RentModel>;
   let shoeRepository: Repository<ShoeModel>;
+  let rentLogRepository: Repository<RentLogModel>;
   let userService: UserService;
   let dataSources: DataSource;
 
@@ -52,6 +55,12 @@ describe('RentService', () => {
             createQueryRunner: jest.fn(),
           },
         },
+        {
+          provide: getRepositoryToken(RentLogModel),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -61,6 +70,9 @@ describe('RentService', () => {
     );
     shoeRepository = module.get<Repository<ShoeModel>>(
       getRepositoryToken(ShoeModel),
+    );
+    rentLogRepository = module.get<Repository<RentLogModel>>(
+      getRepositoryToken(RentLogModel),
     );
     userService = module.get<UserService>(UserService);
     dataSources = module.get<DataSource>(DataSource);
@@ -471,10 +483,18 @@ describe('RentService', () => {
       const shoe = new ShoeModel();
       shoe.rentable = 0;
       shoe.count = 1;
+      const reuturnLog = new ReturnLogModel();
+      const rentedLog = new RentLogModel();
+      reuturnLog.rented = rentedLog;
       jest.spyOn(userService, 'findUserById').mockResolvedValue(user);
       jest.spyOn(rentRepository, 'findOne').mockResolvedValue(rent);
       jest.spyOn(shoeRepository, 'findOne').mockResolvedValue(shoe);
       jest.spyOn(shoeRepository, 'save').mockResolvedValue(shoe);
+      jest.spyOn(rentLogRepository, 'findOne').mockResolvedValue(rentedLog);
+      jest.spyOn(QueryRunner.manager, 'save').mockResolvedValue(reuturnLog);
+      jest
+        .spyOn(rentRepository, 'delete')
+        .mockResolvedValue(new DeleteResult());
       // WHEN
       const result = await rentService.returnShoe(userId, size);
       // THEN

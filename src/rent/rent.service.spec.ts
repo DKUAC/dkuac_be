@@ -24,6 +24,7 @@ describe('RentService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [],
       providers: [
         RentService,
         {
@@ -39,16 +40,18 @@ describe('RentService', () => {
             findOne: jest.fn(),
             save: jest.fn(),
             delete: jest.fn(),
+            insert: jest.fn(),
           },
         },
-        {
-          provide: getRepositoryToken(ShoeModel),
-          useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            save: jest.fn(),
-          },
-        },
+        // {
+        //   provide: getRepositoryToken(ShoeModel),
+        //   useValue: {
+        //     find: jest.fn(),
+        //     findOne: jest.fn(),
+        //     save: jest.fn(),
+        //     insert: jest.fn(),
+        //   },
+        // },
         {
           provide: DataSource,
           useValue: {

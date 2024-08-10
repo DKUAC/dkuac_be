@@ -18,6 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:int": "jest --config ./test/jest-int.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --dataSource ./data-source.ts",
     "migration:create": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:create ./src/database/migrations/Migration",
     "migration:generate": "npm run typeorm migration:generate ./src/database/migrations/Migration",
@@ -50,8 +51,9 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
+    "k6": "^0.0.0",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.10.1",
+    "mysql2": "^3.11.0",
     "nodemailer": "^6.9.14",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -119,8 +121,12 @@
       "src/auth/guards/*",
       "src/auth/strategies/*",
       "src/common/interceptors/*",
+      "src/common/filters/*",
+      "src/configs",
+      "src/rent/interceptor/*",
       "src/database",
-      "src/main.ts"
+      "src/main.ts",
+      "src/instrument.ts"
     ]
   }
 }

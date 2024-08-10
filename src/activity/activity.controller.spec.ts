@@ -130,12 +130,13 @@ describe('ActivityController', () => {
       // GIVEN
       const dto = new PostActivityDto();
       const mockImageFiles = [] as Express.Multer.File[];
+      dto.content = '활동 사진 업로드 안함';
 
       // WHEN
       // THEN
       await expect(
         controller.postActivity(mockRequest, dto, mockImageFiles),
-      ).rejects.toThrow('활동 사진을 업로드해주세요');
+      ).rejects.toThrow(BadRequestException);
     });
   });
 

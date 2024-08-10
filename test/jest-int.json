@@ -1,0 +1,12 @@
+{
+  "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
+  "verbose": true,
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".int-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "modulePaths": ["<rootDir>/.."]
+}

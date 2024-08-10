@@ -19,7 +19,7 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { LogInterceptor } from './common/interceptors/log.interceptor';
 import { CommentModule } from './activity/comment/comment.module';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
-const configService = new ConfigService();
+import { typeOrmModuleOptions } from './configs/db.config';
 
 @Module({
   imports: [
@@ -27,21 +27,11 @@ const configService = new ConfigService();
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: configService.get('DOCKER_MYSQL_HOST'),
-      port: configService.get<number>('DOCKER_MYSQL_PORT'),
-      database: configService.get('DOCKER_MYSQL_DATABASE'),
-      username: configService.get('DOCKER_MYSQL_USERNAME'),
-      password: configService.get('DOCKER_MYSQL_PASSWORD'),
-      autoLoadEntities: true,
-      synchronize: true,
-      logging: true,
-    }),
+    TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     ThrottlerModule.forRoot([
       {
-        ttl: 60000,
-        limit: 50,
+        ttl: 1000,
+        limit: 10,
       },
     ]),
     AuthModule,

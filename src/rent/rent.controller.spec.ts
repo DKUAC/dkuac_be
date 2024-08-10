@@ -2,9 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RentController } from './rent.controller';
 import { RentService } from './rent.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { BadRequestException, ExecutionContext } from '@nestjs/common';
+import {
+  BadRequestException,
+  CallHandler,
+  ExecutionContext,
+} from '@nestjs/common';
 import { RentShoeDto } from './dto/rent.dto';
 import { RentModel } from './entities/rent.entity';
+import { RentInterceptor } from './interceptor/rent.interceptor';
+import { ReturnInterceptor } from './interceptor/return.interceptor';
 
 describe('RentController', () => {
   let controller: RentController;
@@ -37,6 +43,18 @@ describe('RentController', () => {
       .overrideGuard(JwtAuthGuard)
       .useValue({
         canActivate: (context: ExecutionContext) => true,
+      })
+      .overrideInterceptor(RentInterceptor)
+      .useValue({
+        intercept: (context: ExecutionContext, next: CallHandler) => {
+          return next.handle();
+        },
+      })
+      .overrideInterceptor(ReturnInterceptor)
+      .useValue({
+        intercept: (context: ExecutionContext, next: CallHandler) => {
+          return next.handle();
+        },
       })
       .compile();
 

@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,35 +16,31 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@ApiTags('/activity/:activityId/comment')
-@Controller('activity/:activityId/comment')
+@ApiTags('/activity/:activityId/comments')
+@Controller('activity/:activityId/comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @ApiOperation({
     summary: '특정 활동의 댓글 조회',
   })
-  @Get('')
-  async getComments(@Param('activityId') activityId: number) {
+  @Get()
+  async getComments(@Param('activityId', ParseIntPipe) activityId: number) {
     return await this.commentService.getComments(activityId);
   }
 
   @ApiOperation({
     summary: '특정 활동의 댓글 작성',
   })
-  @Post('')
+  @Post()
   @UseGuards(JwtAuthGuard)
   async postComment(
-    @Param('activityId') activityId: number,
+    @Param('activityId', ParseIntPipe) activityId: number,
     @Req() req,
     @Body() dto: CreateCommentDto,
   ) {
-    const { studentNumber } = req.user;
-    return await this.commentService.postComment(
-      activityId,
-      studentNumber,
-      dto,
-    );
+    const { sub } = req.user;
+    return await this.commentService.postComment(activityId, sub, dto);
   }
 
   @ApiOperation({
@@ -51,7 +49,7 @@ export class CommentController {
   @Put(':commentId')
   @UseGuards(JwtAuthGuard)
   async putComment(
-    @Param('commentId') commentId: number,
+    @Query('commentId') commentId: number,
     @Req() req,
     @Body() dto: UpdateCommentDto,
   ) {
@@ -64,7 +62,7 @@ export class CommentController {
   })
   @Delete(':commentId')
   @UseGuards(JwtAuthGuard)
-  async deleteComment(@Param('commentId') commentId: number, @Req() req) {
+  async deleteComment(@Query('commentId') commentId: number, @Req() req) {
     const { sub } = req.user;
     return await this.commentService.deleteComment(commentId, sub);
   }

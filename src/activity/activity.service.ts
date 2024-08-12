@@ -194,13 +194,15 @@ export class ActivityService {
       where: {
         id: activityId,
       },
-      relations: ['comments'],
+      relations: ['Comments'],
     });
 
     if (!activity) {
       throw new NotFoundException('존재하지 않는 글입니다.');
     }
 
+    console.log('in comment service');
+    console.log(activity);
     return activity.Comments;
   }
 }

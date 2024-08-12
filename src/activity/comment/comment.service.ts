@@ -17,18 +17,13 @@ export class CommentService {
     @InjectRepository(CommentModel)
     private readonly commentRepository: Repository<CommentModel>,
     private readonly activityService: ActivityService,
-    private readonly userService: UserService,
   ) {}
 
   async getComments(activityId: number) {
     return await this.activityService.getActivityComments(activityId);
   }
 
-  async postComment(
-    activityId: number,
-    studentNumber: number,
-    dto: CreateCommentDto,
-  ) {
+  async postComment(activityId: number, sub: number, dto: CreateCommentDto) {
     const { content } = dto;
     const activity = await this.activityService.getActivityById(activityId);
 
@@ -36,19 +31,13 @@ export class CommentService {
       throw new BadRequestException('내용을 입력해주세요.');
     }
 
-    const user = await this.userService.findUserByStudentNumber(studentNumber);
-
-    if (!user) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
-    }
-
-    console.log(user);
-
     try {
       await this.commentRepository.save({
         content,
         Activity: activity,
-        Author: user,
+        Author: {
+          id: sub,
+        },
       });
       return {
         message: '댓글이 작성되었습니다.',

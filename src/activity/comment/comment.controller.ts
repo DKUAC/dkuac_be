@@ -37,8 +37,12 @@ export class CommentController {
     @Req() req,
     @Body() dto: CreateCommentDto,
   ) {
-    const { sub } = req.user;
-    return await this.commentService.postComment(activityId, sub, dto);
+    const { studentNumber } = req.user;
+    return await this.commentService.postComment(
+      activityId,
+      studentNumber,
+      dto,
+    );
   }
 
   @ApiOperation({

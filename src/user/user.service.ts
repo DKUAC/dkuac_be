@@ -17,4 +17,12 @@ export class UserService {
       },
     });
   }
+
+  async findUserByStudentNumber(studentNumber: number) {
+    return await this.userRepository.findOne({
+      where: {
+        studentNumber,
+      },
+    });
+  }
 }

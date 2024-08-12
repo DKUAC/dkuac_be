@@ -6,11 +6,13 @@ import { CommentModel } from './entities/comment.entity';
 import { UserModel } from 'src/user/entities/user.entity';
 import { ActivityModel } from '../entities/activity.entity';
 import { ActivityModule } from '../activity.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CommentModel, UserModel, ActivityModel]),
     ActivityModule,
+    UserModule,
   ],
   controllers: [CommentController],
   providers: [CommentService],

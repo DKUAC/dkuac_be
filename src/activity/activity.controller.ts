@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -28,10 +29,10 @@ export class ActivityController {
   @ApiOperation({
     summary: '가장 최근 학기의 활동을 가져오는 API',
   })
-  @Get(':year/:semester')
+  @Get()
   getActivityByYearAndSemseter(
-    @Param('year') year: number,
-    @Param('semester') semester: number,
+    @Query('year') year: number,
+    @Query('semester') semester: number,
   ) {
     return this.activityService.getActivityByYearAndSemseter(year, semester);
   }

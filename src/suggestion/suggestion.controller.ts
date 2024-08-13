@@ -26,6 +26,8 @@ export class SuggestionController {
   @UseGuards(JwtAuthGuard)
   async postSuggestion(@Req() req, @Body() dto: SuggestionDto) {
     const { sub } = req.user;
+    console.log('건의사항 등록');
+    console.log(sub);
     const result = await this.suggestionService.postSuggestion(sub, dto);
     return result;
   }

@@ -68,12 +68,12 @@ export default class UsersSeeder implements Seeder {
 
     await userFactory.saveMany(3000);
 
-    const activityFactory = factoryManager.get(ActivityModel);
+    // const activityFactory = factoryManager.get(ActivityModel);
 
-    for (let i = 0; i < 1000; i++) {
-      const activity = await activityFactory.make();
-      activity.Author = await repository.findOne({ where: { isStaff: true } });
-      await activityFactory.save(activity);
-    }
+    // for (let i = 0; i < 1000; i++) {
+    //   const activity = await activityFactory.make();
+    //   activity.Author = await repository.findOne({ where: { isStaff: true } });
+    //   await activityFactory.save(activity);
+    // }
   }
 }

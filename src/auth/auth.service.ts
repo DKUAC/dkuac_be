@@ -215,9 +215,16 @@ export class AuthService {
   }
 
   async rotateToken(rawToken: string) {
-    // refresh token 검증 로직 추가
-    const user = await this.getInfosInToken(rawToken);
-    // const isVerified = await this.jwtService.verifyAsync();
+    const userInfo = await this.getInfosInToken(rawToken);
+    console.log(userInfo.sub);
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userInfo.sub,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 유저입니다.');
+    }
     const accessToken = await this.genAccessToken(user);
     return {
       accessToken,

@@ -68,10 +68,14 @@ export class AuthController {
   })
   @Post('logout')
   async logout(@Res() res: Response) {
-    res.clearCookie('refreshToken');
-    return {
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      path: '/',
+    });
+
+    return res.status(200).json({
       message: '로그아웃 되었습니다.',
-    };
+    });
   }
 
   @ApiOperation({

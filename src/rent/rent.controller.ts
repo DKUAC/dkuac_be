@@ -64,7 +64,8 @@ export class RentController {
     if (!dto.size) {
       throw new BadRequestException('사이즈를 입력해주세요.');
     }
-    return await this.rentService.rentShoe(sub, dto.size);
+    const result = await this.rentService.rentShoe(sub, dto.size);
+    return result;
   }
 
   @ApiOperation({

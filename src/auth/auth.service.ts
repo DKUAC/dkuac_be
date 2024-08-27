@@ -73,7 +73,7 @@ export class AuthService {
       where: {
         studentNumber: dto.studentNumber,
       },
-      select: ['id', 'studentNumber', 'password', 'isStaff'],
+      select: ['id', 'studentNumber', 'password', 'isStaff', 'name'],
     });
     if (!user) {
       throw new NotFoundException('학번 혹은 비밀번호를 확인해주세요.');
@@ -87,6 +87,7 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        name: user.name,
         isStaff: user.isStaff,
       },
       ...tokens,

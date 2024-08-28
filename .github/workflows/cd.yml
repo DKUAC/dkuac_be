@@ -25,7 +25,6 @@ jobs:
           key: ${{ secrets.AWS_EC2_PEM_KEY }}
           port: ${{ secrets.AWS_EC2_PORT }}
           envs: ENVIRONMENT
-          script_stop: true
           script: |
 
             export NVM_DIR="$HOME/.nvm"

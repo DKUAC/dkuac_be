@@ -1,0 +1,51 @@
+name: Nest.js CD
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Nest.js CI']
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    # workflow 완료 후 결과가 성공 일 때
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # 작업을 실행 할 VM의 OS 지정
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_PEM_KEY }}
+          port: ${{ secrets.AWS_EC2_PORT }}
+          envs: ENVIRONMENT
+          script_stop: true
+          script: |
+
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+            export PATH="$(yarn global bin):$PATH"
+
+            cd /home/ubuntu/nest-cicd
+
+            git switch main
+
+            git pull
+
+            echo "$ENVIRONMENT" > .env
+
+            npm ci
+
+            npm run build
+
+            pm2 delete dkuac-server
+
+            pm2 --name dkuac-server start dist/src/main.js
+
+            pm2 save

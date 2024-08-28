@@ -11,12 +11,14 @@ import * as multer from 'multer';
 import { ACTIVITY_IMAGE_PATH } from 'src/common/const/path.const';
 import { v4 as uuid } from 'uuid';
 import { CommentModel } from './comment/entities/comment.entity';
+import { AwsModule } from 'src/aws/aws.module';
 
 @Module({
   exports: [ActivityService],
   imports: [
     TypeOrmModule.forFeature([ActivityModel, UserModel]),
     UserModule,
+    AwsModule,
     MulterModule.register({
       limits: {
         fileSize: 100000000,
@@ -31,14 +33,15 @@ import { CommentModel } from './comment/entities/comment.entity';
         }
         return cb(null, true);
       },
-      storage: multer.diskStorage({
-        destination: function (req, res, cb) {
-          cb(null, ACTIVITY_IMAGE_PATH);
-        },
-        filename: function (req, file, cb) {
-          cb(null, `${uuid()}${extname(file.originalname)}`);
-        },
-      }),
+      // storage: multer.diskStorage({
+      //   destination: function (req, res, cb) {
+      //     cb(null, ACTIVITY_IMAGE_PATH);
+      //   },
+      //   filename: function (req, file, cb) {
+      //     cb(null, `${uuid()}${extname(file.originalname)}`);
+      //   },
+      // }),
+      storage: multer.memoryStorage(),
     }),
   ],
   controllers: [ActivityController],

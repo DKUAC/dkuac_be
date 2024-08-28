@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { ConfigModule } from '@nestjs/config';
-import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
@@ -20,6 +19,7 @@ import { LogInterceptor } from './common/interceptors/log.interceptor';
 import { CommentModule } from './activity/comment/comment.module';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 import { typeOrmModuleOptions } from './configs/db.config';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -47,6 +47,7 @@ import { typeOrmModuleOptions } from './configs/db.config';
     SuggestionModule,
     ScheduleModule,
     CommentModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [

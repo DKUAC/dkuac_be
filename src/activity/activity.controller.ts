@@ -18,11 +18,17 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { EditActivityDto, PostActivityDto } from './dto/activity.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AwsService } from 'src/aws/aws.service';
+import { extname } from 'path';
+import { v4 as uuid } from 'uuid';
 
 @ApiTags('Activity')
 @Controller('activity')
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) {}
+  constructor(
+    private readonly activityService: ActivityService,
+    private readonly awsService: AwsService,
+  ) {}
 
   // 가장 최근 학기의 활동을 가져오는 API
   // 오늘 날짜를 기준으로 1학기는 3월~8월, 2학기는 9월~2월로 정의
@@ -43,7 +49,7 @@ export class ActivityController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('images', 3))
-  postActivity(
+  async postActivity(
     @Req() req,
     @Body() dto: PostActivityDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -53,8 +59,49 @@ export class ActivityController {
     }
 
     const { sub } = req.user;
-    const fileNames = files.map((f) => f.filename);
-    return this.activityService.postActivity(sub, dto, fileNames);
+
+    const uploadUrls = await Promise.all(
+      files.map(async (f) => {
+        // 고유한 파일 이름 생성
+        const fileName = `${uuid()}${extname(f.originalname)}`;
+        // S3에 파일 업로드
+        const url = await this.awsService.imageUploadToS3(
+          fileName,
+          f, // f.buffer를 통해 파일 내용을 S3에 업로드
+          extname(f.originalname),
+        );
+
+        return url;
+      }),
+    );
+
+    return this.activityService.postActivity(sub, dto, uploadUrls);
+  }
+
+  @Post('image')
+  @UseInterceptors(FilesInterceptor('images', 3))
+  async uploadImage(@UploadedFiles() files: Express.Multer.File[]) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('파일이 업로드되지 않았습니다.');
+    }
+
+    const uploadUrls = await Promise.all(
+      files.map(async (f) => {
+        // 고유한 파일 이름 생성
+        const fileName = `${uuid()}${extname(f.originalname)}`;
+        // S3에 파일 업로드
+        const url = await this.awsService.imageUploadToS3(
+          fileName,
+          f, // f.buffer를 통해 파일 내용을 S3에 업로드
+          extname(f.originalname),
+        );
+
+        return url;
+      }),
+    );
+
+    console.log('업로드된 URL들:', uploadUrls);
+    return { urls: uploadUrls };
   }
 
   @ApiOperation({

@@ -35,6 +35,7 @@ export class ScheduleService {
     if (!title || !content || !date) {
       throw new BadRequestException('일정 내용, 날짜, 장소는 필수입니다.');
     }
+    date.setHours(0, 0, 0, 0);
     try {
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
@@ -74,6 +75,7 @@ export class ScheduleService {
 
   async getDaySchedule(date: Date) {
     // 특정 날짜의 스케쥴 반환
+    console.log(date);
     const schedules = await this.scheduleRepository.find({
       where: { date },
     });

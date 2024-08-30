@@ -1,16 +1,21 @@
 import './instrument';
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const PORT = process.env.PORT || 3000;
+  let configService = app.get(ConfigService);
+  const PORT = configService.get<number>('PORT') || 3000;
+  const NODE_ENV = configService.get<string>('NODE_ENV');
+  const CORS_ORIGIN = configService.get<string>('CORS_ORIGIN');
 
   const corsOptions = {
-    origin: ['http://localhost:3001'],
+    origin: [CORS_ORIGIN],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
@@ -48,7 +53,7 @@ async function bootstrap() {
   });
 
   await app.listen(PORT, () => {
-    console.log(`Running API in MODE: ${process.env.NODE_ENV} on PORT ${PORT}`);
+    console.log(`Running API in MODE: ${NODE_ENV} on PORT ${PORT}`);
   });
 }
 bootstrap();

@@ -15,7 +15,11 @@ async function bootstrap() {
   const CORS_ORIGIN = configService.get<string>('CORS_ORIGIN');
   const corsOptions = {
     origin: [CORS_ORIGIN, 'http://localhost:3001'],
+<<<<<<< HEAD
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+=======
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+>>>>>>> b0ee28f (fix: add cors origin)
     credentials: true,
     allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
   };

@@ -78,6 +78,7 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('학번 혹은 비밀번호를 확인해주세요.');
     }
+
     const ok = bcrypt.compareSync(dto.password, user?.password);
     if (!ok) {
       throw new NotFoundException('학번 혹은 비밀번호를 확인해주세요.');
@@ -217,7 +218,6 @@ export class AuthService {
 
   async rotateToken(rawToken: string) {
     const userInfo = await this.getInfosInToken(rawToken);
-    console.log(userInfo.sub);
     const user = await this.userRepository.findOne({
       where: {
         id: userInfo.sub,

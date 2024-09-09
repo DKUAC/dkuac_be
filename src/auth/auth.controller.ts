@@ -51,7 +51,9 @@ export class AuthController {
     );
     res.cookie('refreshToken', req.user.refreshToken, {
       httpOnly: true,
-      maxAge: refreshTokenExpirestime * 1000,
+      maxAge: refreshTokenExpirestime * 100,
+      sameSite: 'none',
+      secure: true,
     });
     const getAccessTokenExpiredTime =
       await this.authService.getTokenExpiresTime(req.user.accessToken);
@@ -183,11 +185,21 @@ export class AuthController {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         path: '/',
+        sameSite: 'none',
+        secure: true,
       });
       throw new UnauthorizedException('로그인이 필요합니다.');
     }
-    const result = await this.authService.rotateToken(refreshToken);
-    return result;
+    const { accessToken: newAccessToken } =
+      await this.authService.rotateToken(refreshToken);
+    const getAccessTokenExpiredTime =
+      await this.authService.getTokenExpiresTime(newAccessToken);
+    let date = new Date();
+    date.setSeconds(date.getSeconds() + getAccessTokenExpiredTime);
+    return res.json({
+      accessToken: newAccessToken,
+      expiredTime: date,
+    });
   }
 
   @ApiOperation({

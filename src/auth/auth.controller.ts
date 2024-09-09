@@ -7,6 +7,7 @@ import {
   Get,
   Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -176,8 +177,15 @@ export class AuthController {
     summary: '토큰 재발급',
   })
   @Get('token/access')
-  async getAccessToken(@Request() req: ExpressRequest) {
+  async getAccessToken(@Request() req: ExpressRequest, @Res() res: Response) {
     const refreshToken = req.cookies['refreshToken'];
+    if (!refreshToken) {
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        path: '/',
+      });
+      throw new UnauthorizedException('로그인이 필요합니다.');
+    }
     const result = await this.authService.rotateToken(refreshToken);
     return result;
   }

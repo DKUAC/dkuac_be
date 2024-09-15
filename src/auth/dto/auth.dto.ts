@@ -1,7 +1,7 @@
 import { UserModel } from 'src/user/entities/user.entity';
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsIn, IsNumber, IsString } from 'class-validator';
 
 export class SignUpDto extends PickType(UserModel, [
   'name',
@@ -14,7 +14,14 @@ export class SignUpDto extends PickType(UserModel, [
     description: '유저 이름',
     default: '홍길동',
   })
+  @IsString()
   name: string;
+
+  @ApiProperty({
+    description: '유저 메일',
+    default: 'abcdefg@dankook.ac.kr',
+  })
+  email: string;
 
   @ApiProperty({
     description: '전공',
@@ -30,18 +37,21 @@ export class SignUpDto extends PickType(UserModel, [
     `,
     default: 32184045,
   })
+  @IsNumber()
   studentNumber: number;
 
   @ApiProperty({
     description: '생년월일',
     default: '1998-03-02',
   })
+  @IsDate()
   birth: Date;
 
   @ApiProperty({
     description: `전화번호, 초기 비밀번호로 쓰일 예정(e.g. 01012345678 -> 12345678(기본 비밀번호))`,
     default: '01012345678',
   })
+  @IsString()
   phone: string;
 }
 
@@ -53,12 +63,14 @@ export class LogInDto extends PickType(UserModel, [
     description: '학번',
     default: 32184045,
   })
+  @IsNumber()
   studentNumber: number;
 
   @ApiProperty({
     description: '비밀번호',
     default: '12345678',
   })
+  @IsString()
   password: string;
 }
 

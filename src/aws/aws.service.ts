@@ -27,7 +27,7 @@ export class AwsService {
       Body: file.buffer,
       ContentType: file.mimetype,
       // ContentType: `image/${ext}`,
-      // ACL: 'public-read',
+      ACL: 'public-read',
     });
     try {
       await this.s3Client.send(command);

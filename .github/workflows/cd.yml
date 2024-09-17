@@ -15,6 +15,16 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+      - name: Upload script to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_PEM_KEY }}
+          port: ${{ secrets.AWS_EC2_PORT }}
+          source: ./.github/scripts/deploy.sh
+          target: /home/ubuntu/deploy.sh
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         env:
@@ -26,25 +36,27 @@ jobs:
           port: ${{ secrets.AWS_EC2_PORT }}
           envs: ENVIRONMENT
           script: |
+            chmod +x /home/ubuntu/deploy.sh
+            /home/ubuntu/deploy.sh
 
             # export NVM_DIR="$HOME/.nvm"
             # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
             # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-            cd /home/ubuntu/dkuac_be
+            # cd /home/ubuntu/dkuac_be
 
-            git switch main
+            # git switch main
 
-            git pull
+            # git pull
 
-            echo "$ENVIRONMENT" > .env
+            # echo "$ENVIRONMENT" > .env
 
-            npm ci
+            # npm ci
 
-            npm run build
+            # npm run build
 
-            pm2 delete dkuac-server
+            # pm2 delete dkuac-server
 
-            pm2 --name dkuac-server start dist/src/main.js
+            # pm2 --name dkuac-server start dist/src/main.js
 
-            pm2 save
+            # pm2 save

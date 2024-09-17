@@ -21,13 +21,12 @@ export class AwsService {
     file: Express.Multer.File,
     ext: string,
   ) {
-    console.log('file');
-    console.log(file.buffer);
     const command = new PutObjectCommand({
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       Key: fileName,
       Body: file.buffer,
-      ContentType: `image/${ext}`,
+      ContentType: file.mimetype,
+      // ContentType: `image/${ext}`,
       // ACL: 'public-read',
     });
     try {

@@ -53,18 +53,16 @@ export class AuthService {
     return user;
   }
 
-  async createVerificationCodeAndSend(studentNumber: number, message?: string) {
+  async createVerificationCodeAndSend(email: string, message?: string) {
     const verifcationCode: string = this.generateVerifcationCode();
     message = 'DKUAC 회원가입을 위한 인증번호';
-    await this.cacheManager.set(`${studentNumber}`, verifcationCode, 3000000);
-    this.emailService.sendEmail(studentNumber, message, verifcationCode);
+    await this.cacheManager.set(`${email}`, verifcationCode, 3000000);
+    this.emailService.sendEmail(email, message, verifcationCode);
     return '인증코드 전송 완료';
   }
 
-  async isVerified(studentNumber: number, codeFromUser: string) {
-    const verificationCode = await this.cacheManager.get<string>(
-      `${studentNumber}`,
-    );
+  async isVerified(email: string, codeFromUser: string) {
+    const verificationCode = await this.cacheManager.get<string>(`${email}`);
     return verificationCode === codeFromUser;
   }
 
@@ -171,10 +169,10 @@ export class AuthService {
     return '권한 변경 성공';
   }
 
-  async findMyPassword(studentNumber: number) {
+  async findMyPassword(email: string) {
     const user = await this.userRepository.findOne({
       where: {
-        studentNumber,
+        email,
       },
     });
 
@@ -182,14 +180,14 @@ export class AuthService {
       throw new NotFoundException('존재하지 않는 유저입니다.');
     }
 
-    await this.createVerificationCodeAndSend(studentNumber, '비밀번호 찾기');
+    await this.createVerificationCodeAndSend(email, '비밀번호 찾기');
     return '인증번호 전송 성공';
   }
 
-  async generateNewPassword(studentNumber: number) {
+  async generateNewPassword(email: string) {
     const user = await this.userRepository.findOne({
       where: {
-        studentNumber,
+        email,
       },
     });
 
@@ -209,7 +207,7 @@ export class AuthService {
     await this.userRepository.save(userObj);
 
     await this.emailService.sendNewPassword(
-      studentNumber,
+      email,
       'DKUAC 새로운 비밀번호 전송.',
       newPassword,
     );

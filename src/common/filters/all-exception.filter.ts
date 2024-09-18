@@ -19,8 +19,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   async catch(exception: unknown, host: ArgumentsHost) {
     Sentry.captureException(exception);
-    // In certain situations `httpAdapter` might not be available in the
-    // constructor method, thus we should resolve it here.
 
     const url = this.configService.get('SLACK_ERROR_WEBHOOK_URL');
     const webhook = new IncomingWebhook(url);

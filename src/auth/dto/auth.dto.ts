@@ -9,6 +9,7 @@ export class SignUpDto extends PickType(UserModel, [
   'studentNumber',
   'birth',
   'phone',
+  'email',
 ]) {
   @ApiProperty({
     description: '유저 이름',
@@ -21,12 +22,14 @@ export class SignUpDto extends PickType(UserModel, [
     description: '유저 메일',
     default: 'abcdefg@dankook.ac.kr',
   })
+  @IsString()
   email: string;
 
   @ApiProperty({
     description: '전공',
     default: '컴퓨터공학',
   })
+  @IsString()
   major: string;
 
   @ApiProperty({
@@ -76,20 +79,20 @@ export class LogInDto extends PickType(UserModel, [
 
 export class CreateVerificationCodeDto {
   @ApiProperty({
-    description: '학번',
-    default: 32184045,
+    description: '가입시 사용한 이메일',
+    default: '32184045@dankook.ac.kr',
   })
-  @IsNumber()
-  studentNumber: number;
+  @IsString()
+  email: string;
 }
 
 export class IsVerifiedDto {
   @ApiProperty({
-    description: '학번',
-    default: 32184045,
+    description: '가입 시 사용한 이메일',
+    default: '32184045@dankook.ac.kr',
   })
-  @IsNumber()
-  studentNumber: number;
+  @IsString()
+  email: string;
 
   @ApiProperty({
     description: '사용자가 입력한 인증번호',
@@ -127,18 +130,18 @@ export class ChangeUserToStaffDto {
 
 export class FindMyPasswordDto {
   @ApiProperty({
-    description: '학번',
-    default: 32184045,
+    description: '가입 시 사용한 이메일',
+    default: '32184045@dankook.ac.kr',
   })
-  @IsNumber()
-  studentNumber: number;
+  @IsString()
+  email: string;
 }
 
 export class GenerateNewPasswordDto {
   @ApiProperty({
-    description: '학번',
-    default: 32184045,
+    description: '가입 시 사용한 이메일',
+    default: '32184045@dankook.ac.kr',
   })
-  @IsNumber()
-  studentNumber: number;
+  @IsString()
+  email: string;
 }

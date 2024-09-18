@@ -35,6 +35,7 @@ export class AuthController {
   })
   @Post('signup')
   async signUp(@Body() dto: SignUpDto, @Res() res: Response) {
+    console.log(dto);
     const result = await this.authService.signUp(dto);
 
     return res.status(201).send(result);
@@ -93,7 +94,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const result = await this.authService.createVerificationCodeAndSend(
-      dto.studentNumber,
+      dto.email,
     );
 
     return res.status(201).send(result);
@@ -106,7 +107,7 @@ export class AuthController {
   @Post('is-verified')
   async isVerified(@Body() dto: IsVerifiedDto, @Res() res: Response) {
     const result = await this.authService.isVerified(
-      dto.studentNumber,
+      dto.email,
       dto.codeFromUser,
     );
 
@@ -161,8 +162,8 @@ export class AuthController {
   })
   @Post('find-my-password')
   async findMyPassword(@Body() dto: FindMyPasswordDto) {
-    const { studentNumber } = dto;
-    const result = await this.authService.findMyPassword(studentNumber);
+    const { email } = dto;
+    const result = await this.authService.findMyPassword(email);
     return result;
   }
 
@@ -171,8 +172,8 @@ export class AuthController {
   })
   @Post('generate-new-password')
   async generateNewPassword(@Body() dto: GenerateNewPasswordDto) {
-    const { studentNumber } = dto;
-    return await this.authService.generateNewPassword(studentNumber);
+    const { email } = dto;
+    return await this.authService.generateNewPassword(email);
   }
 
   @ApiOperation({

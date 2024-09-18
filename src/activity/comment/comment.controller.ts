@@ -49,7 +49,7 @@ export class CommentController {
   @Put(':commentId')
   @UseGuards(JwtAuthGuard)
   async putComment(
-    @Query('commentId') commentId: number,
+    @Param('commentId') commentId: number,
     @Req() req,
     @Body() dto: UpdateCommentDto,
   ) {
@@ -62,8 +62,8 @@ export class CommentController {
   })
   @Delete(':commentId')
   @UseGuards(JwtAuthGuard)
-  async deleteComment(@Query('commentId') commentId: number, @Req() req) {
+  async deleteComment(@Param('commentId') commentId: number, @Req() req) {
     const { sub } = req.user;
-    return await this.commentService.deleteComment(commentId, sub);
+    return await this.commentService.deleteComment(+commentId, sub);
   }
 }

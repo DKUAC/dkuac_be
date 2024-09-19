@@ -21,6 +21,10 @@ export class AwsService {
     file: Express.Multer.File,
     ext: string,
   ) {
+    console.log('fileName: ', fileName);
+    console.log('file: ', file);
+    console.log('ext: ', ext);
+    console.log('ContentType: ', file.mimetype);
     const command = new PutObjectCommand({
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       Key: fileName,

@@ -78,7 +78,7 @@ export class ActivityController {
     return this.activityService.postActivity(sub, dto, uploadUrls);
   }
 
-  @Post('image')
+  @Post('images')
   @UseInterceptors(FilesInterceptor('images', 3))
   async uploadImage(@UploadedFiles() files: Express.Multer.File[]) {
     if (!files || files.length === 0) {

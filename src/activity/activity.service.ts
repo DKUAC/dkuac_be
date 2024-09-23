@@ -10,12 +10,15 @@ import { UserService } from 'src/user/user.service';
 import { EditActivityDto, PostActivityDto } from './dto/activity.dto';
 import { ActivityModel } from './entities/activity.entity';
 import { ACTIVITY_PUBLIC_IMAGE_PATH } from 'src/common/const/path.const';
+import { ImageModel } from './entities/images.entity';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @InjectRepository(ActivityModel)
     private readonly activityRepository: Repository<ActivityModel>,
+    @InjectRepository(ImageModel)
+    private readonly imageRepository: Repository<ImageModel>,
     private readonly userService: UserService,
   ) {}
 
@@ -85,19 +88,50 @@ export class ActivityService {
     }
 
     try {
-      const activity = this.activityRepository.create({
+      const activity = this.activityRepository.save({
         title,
         content,
         date,
         semester: date.getMonth() + 1 >= 3 && date.getMonth() + 1 <= 8 ? 1 : 2,
         year: date.getFullYear(),
-        images: JSON.stringify(images),
         Author: user,
       });
 
-      await this.activityRepository.save(activity);
+      // images.forEach(async (image) => {
+      //   const img = this.imageRepository.create({
+      //     imageUrl: image,
+      //     Activity: activity,
+      //   });
+      //   await this.imageRepository.save(img);
+      // });
+
+      // images.forEach(async (image) => {
+      //   await this.imageRepository.save(
+      //     {
+      //       imageUrl: image,
+      //       Activity: activity,
+      //     }
+      //   );
+      // }
+      const savedActivity = await this.activityRepository.findOne({
+        where: {
+          id: (await activity).id,
+        },
+        relations: ['Author'],
+      });
+
+      images.forEach(async (image) => {
+        await this.imageRepository.save(
+          this.imageRepository.create({
+            imageUrl: image,
+            Activity: savedActivity,
+          }),
+        );
+      });
+
       return activity;
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(error.message);
     }
   }
@@ -143,15 +177,15 @@ export class ActivityService {
           dto.date.getMonth() + 1 >= 3 && dto.date.getMonth() + 1 <= 8 ? 1 : 2;
         activity.year = dto.date.getFullYear();
       }
-      if (images.length !== 0) {
-        activity.images = JSON.stringify(images);
-      } else {
-        activity.images = JSON.stringify(activity.images).replaceAll(
-          `${ACTIVITY_PUBLIC_IMAGE_PATH}/`,
-          '',
-        );
-        activity.images = activity.images;
-      }
+      // if (images.length !== 0) {
+      //   activity.images = JSON.stringify(images);
+      // } else {
+      //   activity.images = JSON.stringify(activity.images).replaceAll(
+      //     `${ACTIVITY_PUBLIC_IMAGE_PATH}/`,
+      //     '',
+      //   );
+      //   activity.images = activity.images;
+      // }
 
       const updatedActivity = await this.activityRepository.save({
         ...activity,

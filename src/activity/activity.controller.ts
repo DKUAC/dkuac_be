@@ -36,11 +36,15 @@ export class ActivityController {
     summary: '가장 최근 학기의 활동을 가져오는 API',
   })
   @Get()
-  getActivityByYearAndSemseter(
+  async getActivityByYearAndSemseter(
     @Query('year') year: number,
     @Query('semester') semester: number,
   ) {
-    return this.activityService.getActivityByYearAndSemseter(year, semester);
+    const result = await this.activityService.getActivityByYearAndSemseter(
+      year,
+      semester,
+    );
+    return result;
   }
 
   @ApiOperation({

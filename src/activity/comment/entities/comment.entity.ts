@@ -13,7 +13,9 @@ export class CommentModel extends BaseModel {
   @Column()
   content: string;
 
-  @ManyToOne(() => ActivityModel, (activity) => activity.Comments)
+  @ManyToOne(() => ActivityModel, (activity) => activity.Comments, {
+    onDelete: 'CASCADE',
+  })
   Activity: ActivityModel;
 
   @ManyToOne(() => UserModel, (user) => user.Comments)

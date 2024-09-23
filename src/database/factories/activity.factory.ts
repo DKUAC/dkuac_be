@@ -15,6 +15,6 @@ export default setSeederFactory(ActivityModel, (faker) => {
   activity.year = year;
   activity.semester = month < 9 ? 1 : 2;
   activity.date = date;
-  activity.images = images;
+  // activity.images = images;
   return activity;
 });

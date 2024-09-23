@@ -9,11 +9,12 @@ import { MulterModule } from '@nestjs/platform-express';
 import { extname } from 'path';
 import * as multer from 'multer';
 import { AwsModule } from 'src/aws/aws.module';
+import { ImageModel } from './entities/images.entity';
 
 @Module({
   exports: [ActivityService],
   imports: [
-    TypeOrmModule.forFeature([ActivityModel, UserModel]),
+    TypeOrmModule.forFeature([ActivityModel, UserModel, ImageModel]),
     UserModule,
     AwsModule,
     MulterModule.register({

@@ -56,12 +56,14 @@ export class AuthService {
   async createVerificationCodeAndSend(email: string, message?: string) {
     const verifcationCode: string = this.generateVerifcationCode();
     message = 'DKUAC 회원가입을 위한 인증번호';
+    email = email.substring(0, email.indexOf('@'));
     await this.cacheManager.set(`${email}`, verifcationCode, 3000000);
     this.emailService.sendEmail(email, message, verifcationCode);
     return '인증코드 전송 완료';
   }
 
   async isVerified(email: string, codeFromUser: string) {
+    email = email.substring(0, email.indexOf('@'));
     const verificationCode = await this.cacheManager.get<string>(`${email}`);
     return verificationCode === codeFromUser;
   }

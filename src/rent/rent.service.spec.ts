@@ -3,9 +3,9 @@ import { RentService } from './rent.service';
 import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { RentModel } from './entities/rent.entity';
 import { ShoeModel } from './entities/shoe.entity';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import {
   BadRequestException,
   NotFoundException,

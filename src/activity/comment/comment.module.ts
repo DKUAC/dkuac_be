@@ -3,10 +3,10 @@ import { CommentService } from './comment.service';
 import { CommentController } from './comment.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentModel } from './entities/comment.entity';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { ActivityModel } from '../entities/activity.entity';
 import { ActivityModule } from '../activity.module';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from 'src/auth/user/user.module';
 
 @Module({
   imports: [

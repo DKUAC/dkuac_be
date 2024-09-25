@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ScheduleService } from './schedule.service';
 import { DeleteResult, Repository } from 'typeorm';
 import { ScheduleModel } from './entities/schedule.entity';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import {
   CreateScheduleDto,
   DeleteScheduleDto,
@@ -14,7 +14,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 
 describe('ScheduleService', () => {
   let scheduleService: ScheduleService;

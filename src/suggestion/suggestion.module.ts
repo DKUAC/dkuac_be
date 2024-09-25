@@ -3,8 +3,8 @@ import { SuggestionService } from './suggestion.service';
 import { SuggestionController } from './suggestion.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SuggestionModel } from './entities/suggestion.entity';
-import { UserModel } from 'src/user/entities/user.entity';
-import { UserModule } from 'src/user/user.module';
+import { UserModel } from 'src/auth/user/entities/user.entity';
+import { UserModule } from 'src/auth/user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SuggestionModel, UserModel]), UserModule],

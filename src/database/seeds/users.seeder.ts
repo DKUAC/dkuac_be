@@ -1,5 +1,5 @@
 import { ActivityModel } from 'src/activity/entities/activity.entity';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 

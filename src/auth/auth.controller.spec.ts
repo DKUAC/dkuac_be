@@ -13,7 +13,7 @@ import {
   PasswordCheckDto,
   SignUpDto,
 } from './dto/auth.dto';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 type CustomResponse = Partial<Response> & {

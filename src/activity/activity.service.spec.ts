@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ActivityService } from './activity.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import { DeleteResult, Repository } from 'typeorm';
 import { ActivityModel } from './entities/activity.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -10,7 +10,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { EditActivityDto, PostActivityDto } from './dto/activity.dto';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { CommentModel } from './comment/entities/comment.entity';
 
 describe('ActivityService', () => {

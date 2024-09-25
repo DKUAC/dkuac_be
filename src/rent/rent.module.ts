@@ -4,7 +4,7 @@ import { RentController } from './rent.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RentModel } from './entities/rent.entity';
 import { ShoeModel } from './entities/shoe.entity';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from 'src/auth/user/user.module';
 import { RentLogModel } from './entities/rent-log.entity';
 import { ReturnLogModel } from './entities/return-log.entity';
 

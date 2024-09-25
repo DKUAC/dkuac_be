@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RentModel } from './entities/rent.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { ShoeModel } from './entities/shoe.entity';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import { RentLogModel } from './entities/rent-log.entity';
 import { ReturnLogModel } from './entities/return-log.entity';
 

@@ -7,9 +7,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { SuggestionModel } from './entities/suggestion.entity';
 import { Repository } from 'typeorm';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import { SuggestionDto } from './dto/suggestion.dto';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 
 @Injectable()
 export class SuggestionService {

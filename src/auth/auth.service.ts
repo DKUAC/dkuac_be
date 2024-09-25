@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LogInDto, SignUpDto } from './dto/auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';

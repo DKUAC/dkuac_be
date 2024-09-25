@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SuggestionService } from './suggestion.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import { Repository } from 'typeorm';
 import { SuggestionModel } from './entities/suggestion.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { SuggestionDto } from './dto/suggestion.dto';
 

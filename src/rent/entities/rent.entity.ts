@@ -1,6 +1,6 @@
 import { IsDate, IsNumber } from 'class-validator';
 import { BaseModel } from 'src/common/entities/base.entity';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity({

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 import { EditActivityDto, PostActivityDto } from './dto/activity.dto';
 import { ActivityModel } from './entities/activity.entity';
 import { ACTIVITY_PUBLIC_IMAGE_PATH } from 'src/common/const/path.const';

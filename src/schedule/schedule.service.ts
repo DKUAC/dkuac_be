@@ -12,7 +12,7 @@ import {
   DeleteScheduleDto,
   EditScheduleDto,
 } from './dto/schedule.dto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 
 @Injectable()
 export class ScheduleService {

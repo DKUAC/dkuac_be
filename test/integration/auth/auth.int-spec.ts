@@ -8,7 +8,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
 import { SignUpDto } from 'src/auth/dto/auth.dto';
 import { EmailService } from 'src/email/email.service';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { getTestMySQLTypeOrmModule } from 'test/getTestMySQLTypeOrmModule';
 import { DataSource, Repository } from 'typeorm';
 

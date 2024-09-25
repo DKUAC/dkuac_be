@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { UserModule } from './user/user.module';
+import { UserModule } from './auth/user/user.module';
 import { EmailModule } from './email/email.module';
 import { RentModule } from './rent/rent.module';
 import { ActivityModule } from './activity/activity.module';

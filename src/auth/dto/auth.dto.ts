@@ -1,4 +1,4 @@
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsIn, IsNumber, IsString } from 'class-validator';

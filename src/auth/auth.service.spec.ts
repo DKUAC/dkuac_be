@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserModel } from 'src/user/entities/user.entity';
+import { UserModel } from 'src/auth/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';

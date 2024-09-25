@@ -9,7 +9,7 @@ import { CommentModel } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { ActivityService } from '../activity.service';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/auth/user/user.service';
 
 @Injectable()
 export class CommentService {

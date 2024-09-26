@@ -13,6 +13,6 @@ export class AppController {
 
   @Get('/health')
   getHealth(@Res() res: Response) {
-    return res.status(200).send('ok');
+    return res.status(200).send('healthy');
   }
 }

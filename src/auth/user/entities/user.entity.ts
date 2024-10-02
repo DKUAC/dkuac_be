@@ -41,8 +41,8 @@ export class UserModel extends BaseModel {
   @Column({ default: true })
   currentSemesterMember: boolean = true;
 
-  @Column({ default: false })
-  isPaid: boolean = false;
+  @Column({ default: true })
+  isPaid: boolean = true;
 
   @OneToMany(() => ActivityModel, (activity) => activity.Author)
   activities: ActivityModel[];

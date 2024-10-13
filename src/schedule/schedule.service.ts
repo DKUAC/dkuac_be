@@ -75,7 +75,6 @@ export class ScheduleService {
 
   async getDaySchedule(date: Date) {
     // 특정 날짜의 스케쥴 반환
-    console.log(date);
     const schedules = await this.scheduleRepository.find({
       where: { date },
     });
@@ -84,6 +83,23 @@ export class ScheduleService {
     }
 
     return schedules;
+  }
+
+  async getMonthSchedule(year: number, month: number) {
+    try {
+      const schedules = await this.scheduleRepository.find({
+        where: {
+          year,
+          month,
+        },
+      });
+
+      return schedules;
+    } catch (error) {
+      throw new BadRequestException(
+        '일정을 가져오는 중에 문제가 발생했습니다. 다시 시도해주세요.',
+      );
+    }
   }
 
   async editSchedule(userId: number, editScheduleDto: EditScheduleDto) {

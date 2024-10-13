@@ -8,6 +8,7 @@ import {
   Put,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -24,6 +25,17 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
+
+  @ApiOperation({
+    summary: '특정 달의 전체 스케쥴 조회',
+  })
+  @Get()
+  async getAmonthSchedule(
+    @Query('year') year: number,
+    @Query('month') month: number,
+  ) {
+    return await this.scheduleService.getMonthSchedule(year, month);
+  }
 
   @ApiOperation({
     summary: '스케줄 생성',

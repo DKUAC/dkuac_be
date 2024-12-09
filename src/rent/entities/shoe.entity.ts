@@ -6,15 +6,12 @@ import { Column, Entity } from 'typeorm';
   name: 'shoes',
 })
 export class ShoeModel extends BaseModel {
-  @IsNumber()
   @Column()
   size: number;
 
-  @IsNumber()
   @Column()
   count: number;
 
-  @IsNumber()
   @Column()
   rentable: number;
 }

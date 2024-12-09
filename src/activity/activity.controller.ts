@@ -104,7 +104,6 @@ export class ActivityController {
       }),
     );
 
-    console.log('업로드된 URL들:', uploadUrls);
     return { urls: uploadUrls };
   }
 

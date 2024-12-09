@@ -75,7 +75,6 @@ export class ScheduleService {
 
   async getDaySchedule(date: Date) {
     // 특정 날짜의 스케쥴 반환
-    console.log(date);
     const schedules = await this.scheduleRepository.find({
       where: { date },
     });

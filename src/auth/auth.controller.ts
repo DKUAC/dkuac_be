@@ -35,7 +35,6 @@ export class AuthController {
   })
   @Post('signup')
   async signUp(@Body() dto: SignUpDto, @Res() res: Response) {
-    console.log(dto);
     const result = await this.authService.signUp(dto);
 
     return res.status(201).send(result);

@@ -9,6 +9,7 @@ export class CreateCommentDto extends PickType(CommentModel, ['content']) {
     default: '좋은 글이네요!',
   })
   @IsNotEmpty()
+  @IsString()
   content: string;
 }
 
@@ -18,5 +19,6 @@ export class UpdateCommentDto extends PickType(CommentModel, ['content']) {
     default: '수정할 댓글입니다.',
   })
   @IsNotEmpty()
+  @IsString()
   content: string;
 }

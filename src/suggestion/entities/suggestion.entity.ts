@@ -7,7 +7,6 @@ import { Column, Entity, ManyToOne } from 'typeorm';
   name: 'suggestions',
 })
 export class SuggestionModel extends BaseModel {
-  @IsString()
   @Column()
   content: string;
 

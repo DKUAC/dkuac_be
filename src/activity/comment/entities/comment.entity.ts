@@ -8,8 +8,6 @@ import { Column, Entity, ManyToOne } from 'typeorm';
   name: 'comments',
 })
 export class CommentModel extends BaseModel {
-  @IsString()
-  @IsNotEmpty()
   @Column()
   content: string;
 

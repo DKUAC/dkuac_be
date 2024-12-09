@@ -36,6 +36,7 @@ export class EditActivityDto extends PartialType(ActivityModel) {
     description: '활동 제목',
     default: '외벽 활동',
   })
+  @IsString()
   @IsOptional()
   title?: string;
 
@@ -43,6 +44,7 @@ export class EditActivityDto extends PartialType(ActivityModel) {
     description: '활동 내용',
     default: '외벽 활동',
   })
+  @IsString()
   @IsOptional()
   content?: string;
 
